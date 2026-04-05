@@ -1,4 +1,4 @@
-import BiodataDiri from './components/BiodataDiri';
+import BiodataDiri from "./BiodataDiri";
 import './App.css';
 
 function App() {

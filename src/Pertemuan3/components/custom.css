@@ -1,0 +1,106 @@
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: black !important;
+  caret-color: black !important;
+
+  box-shadow: 0 0 0px 1000px #f1f1f1 inset !important;
+
+  border-radius: 5px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+}
+
+.container {
+  width: 400px;
+  margin: 80px auto;
+  padding: 25px;
+  background: rgba(0, 150, 199, 0.2); 
+  backdrop-filter: blur(10px);        
+  border-radius: 15px;
+  color: white;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;  
+}
+
+label {
+  margin-bottom: 5px;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  height: 40px;              
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  background: #f1f1f1;       
+  color: black;
+  box-sizing: border-box;   
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+input::placeholder {
+  color: #888;        
+}
+
+input:focus, select:focus {
+  border: 2px solid #00c6ff;
+  background: white;
+  box-shadow: 0 0 8px #00c6ff;
+}
+
+.error {
+  background: rgba(255, 77, 77, 0.9);
+  color: white;
+  padding: 6px;
+  border-radius: 5px;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px #00c6ff;
+}
+
+.result {
+  margin-top: 20px;
+  background: rgba(255,255,255,0.9);
+  color: black;
+  padding: 15px;
+  border-radius: 10px;
+}

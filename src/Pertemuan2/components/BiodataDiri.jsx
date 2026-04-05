@@ -5,7 +5,7 @@ import Hobi from "./Hobi";
 import Pendidikan from "./Pendidikan";
 import Kontak from "./Kontak";
 
-import foto from "../assets/hiu.png";
+import foto from "../../assets/hiu.png";
 
 function BiodataDiri() {
   return (
