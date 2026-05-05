@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "name": "Ahmad Rahman",
+    "position": "Barista Senior",
+    "email": "ahmad.rahman@ngopieuy.com",
+    "phone": "+62 812-3456-7890",
+    "shift": "Pagi",
+    "joinDate": "2023-03-15",
+    "salary": "Rp 4.500.000",
+    "status": "active",
+    "avatar": "👨‍🍳"
+  },
+  {
+    "id": 2,
+    "name": "Siti Nurhaliza",
+    "position": "Kasir",
+    "email": "siti.nurhaliza@ngopieuy.com",
+    "phone": "+62 811-2345-6789",
+    "shift": "Siang",
+    "joinDate": "2023-05-20",
+    "salary": "Rp 3.800.000",
+    "status": "active",
+    "avatar": "👩‍💼"
+  },
+  {
+    "id": 3,
+    "name": "Budi Santoso",
+    "position": "Barista Junior",
+    "email": "budi.santoso@ngopieuy.com",
+    "phone": "+62 813-4567-8901",
+    "shift": "Malam",
+    "joinDate": "2023-08-10",
+    "salary": "Rp 3.200.000",
+    "status": "active",
+    "avatar": "👨‍🍳"
+  },
+  {
+    "id": 4,
+    "name": "Maya Sari",
+    "position": "Manager",
+    "email": "maya.sari@ngopieuy.com",
+    "phone": "+62 814-5678-9012",
+    "shift": "Full Time",
+    "joinDate": "2022-01-15",
+    "salary": "Rp 6.500.000",
+    "status": "active",
+    "avatar": "👩‍💼"
+  },
+  {
+    "id": 5,
+    "name": "Rizki Pratama",
+    "position": "Cleaner",
+    "email": "rizki.pratama@ngopieuy.com",
+    "phone": "+62 815-6789-0123",
+    "shift": "Pagi",
+    "joinDate": "2023-11-01",
+    "salary": "Rp 2.800.000",
+    "status": "inactive",
+    "avatar": "👨‍🔧"
+  }
+]

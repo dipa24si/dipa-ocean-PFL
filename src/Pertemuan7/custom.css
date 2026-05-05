@@ -1,0 +1,292 @@
+/**
+ * Custom CSS untuk NgopiEuy
+ * Melengkapi Tailwind CSS dengan custom styles dan animations
+ */
+
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+/* Smooth transitions */
+.transition-smooth {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Custom scrollbar untuk sidebar */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Gradient text effect */
+.gradient-text {
+  background: linear-gradient(135deg, #C15D27 0%, #FFB819 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Hover card effect */
+.hover-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(193, 93, 39, 0.1);
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Slide in animation */
+@keyframes slideInDown {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slideInDown 0.3s ease-in-out;
+}
+
+/* Bounce animation */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+/* Floating animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animation-delay-1000 {
+  animation-delay: 1s;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+/* Blob animation */
+@keyframes blob {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+/* Pulse animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Custom button styles */
+.btn-primary {
+  @apply px-4 py-2 bg-gradient-to-r from-coffee-600 to-brew-500 hover:from-coffee-700 hover:to-brew-600 text-white rounded-lg font-medium transition-all duration-200 shadow-md hover:shadow-lg;
+}
+
+.btn-secondary {
+  @apply px-4 py-2 border-2 border-coffee-600 text-coffee-600 hover:bg-coffee-50 rounded-lg font-medium transition-all duration-200;
+}
+
+.btn-danger {
+  @apply px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-all duration-200;
+}
+
+.btn-outline {
+  @apply px-4 py-2 border-2 border-espresso-300 text-espresso-700 hover:bg-espresso-50 rounded-lg font-medium transition-all duration-200;
+}
+
+/* Custom card styles */
+.card {
+  @apply bg-white rounded-lg shadow-md p-6 transition-all hover:shadow-lg;
+}
+
+.card-secondary {
+  @apply bg-espresso-50 rounded-lg shadow-sm p-6;
+}
+
+/* Badge styles */
+.badge {
+  @apply inline-block px-3 py-1 rounded-full text-xs font-semibold;
+}
+
+.badge-success {
+  @apply bg-green-100 text-green-800;
+}
+
+.badge-warning {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.badge-danger {
+  @apply bg-red-100 text-red-800;
+}
+
+.badge-info {
+  @apply bg-blue-100 text-blue-800;
+}
+
+.badge-coffee {
+  @apply bg-coffee-100 text-coffee-800;
+}
+
+/* Form styles */
+.form-input {
+  @apply w-full px-4 py-2 border border-espresso-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-coffee-500 focus:border-transparent transition-all;
+}
+
+.form-input-error {
+  @apply border-red-500 focus:ring-red-500;
+}
+
+.form-input-success {
+  @apply border-green-500 focus:ring-green-500;
+}
+
+/* Table styles */
+.table-header {
+  @apply bg-espresso-50 text-espresso-900 font-semibold;
+}
+
+.table-row {
+  @apply border-b border-espresso-200 hover:bg-espresso-50 transition-colors;
+}
+
+.table-row-active {
+  @apply bg-coffee-50;
+}
+
+/* Navigation link active state */
+.nav-link {
+  @apply px-4 py-2 rounded-lg transition-all duration-200;
+}
+
+.nav-link-active {
+  @apply bg-gradient-to-r from-coffee-600 to-brew-500 text-white shadow-lg;
+}
+
+.nav-link-inactive {
+  @apply text-espresso-600 hover:bg-espresso-100;
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none;
+  }
+}
+
+@media (min-width: 769px) {
+  .hide-desktop {
+    display: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  .card {
+    @apply bg-espresso-900 text-white;
+  }
+  
+  .form-input {
+    @apply bg-espresso-800 border-espresso-700 text-white;
+  }
+}
+

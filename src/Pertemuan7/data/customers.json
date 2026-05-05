@@ -1,0 +1,57 @@
+[
+  {
+    "id": 1,
+    "name": "Ahmad Rahman",
+    "email": "ahmad.rahman@email.com",
+    "phone": "+62 812-3456-7890",
+    "totalOrders": 15,
+    "totalSpent": "Rp 375.000",
+    "lastOrder": "2024-01-15",
+    "status": "active",
+    "avatar": "👨‍💼"
+  },
+  {
+    "id": 2,
+    "name": "Siti Nurhaliza",
+    "email": "siti.nurhaliza@email.com",
+    "phone": "+62 811-2345-6789",
+    "totalOrders": 8,
+    "totalSpent": "Rp 195.000",
+    "lastOrder": "2024-01-14",
+    "status": "active",
+    "avatar": "👩‍💻"
+  },
+  {
+    "id": 3,
+    "name": "Budi Santoso",
+    "email": "budi.santoso@email.com",
+    "phone": "+62 813-4567-8901",
+    "totalOrders": 12,
+    "totalSpent": "Rp 285.000",
+    "lastOrder": "2024-01-13",
+    "status": "active",
+    "avatar": "👨‍🎓"
+  },
+  {
+    "id": 4,
+    "name": "Maya Sari",
+    "email": "maya.sari@email.com",
+    "phone": "+62 814-5678-9012",
+    "totalOrders": 6,
+    "totalSpent": "Rp 142.000",
+    "lastOrder": "2024-01-12",
+    "status": "inactive",
+    "avatar": "👩‍🎨"
+  },
+  {
+    "id": 5,
+    "name": "Rizki Pratama",
+    "email": "rizki.pratama@email.com",
+    "phone": "+62 815-6789-0123",
+    "totalOrders": 3,
+    "totalSpent": "Rp 68.000",
+    "lastOrder": "2024-01-10",
+    "status": "active",
+    "avatar": "👨‍🔧"
+  }
+]
