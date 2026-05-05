@@ -1,25 +1,29 @@
-/**
- * StatCard Component
- * Kartu statistik untuk menampilkan metrik penjualan
- * Class Tailwind: bg-gradient-to-br, rounded-lg, shadow, p-*
- */
-export default function StatCard({ title, value, change, icon, changeType = 'positive' }) {
+import React from 'react';
+
+const StatCard = ({ title, value, change, icon, changeType }) => {
+  // Tentukan warna berdasarkan changeType (positive/negative)
+  const isPositive = changeType === 'positive';
+  
   return (
-    <div className="relative bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow overflow-hidden">
-      <div className="absolute top-4 right-4 h-12 w-12 flex items-center justify-center rounded-full bg-amber-100 shadow-sm text-2xl text-amber-700">
-        {icon}
+    <div className="bg-white border border-[#3E2C1C]/10 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 cursor-pointer rounded-2xl p-6">
+      <div className="flex items-start justify-between mb-4">
+        <div className="w-12 h-12 bg-[#FDF8F5] rounded-xl flex items-center justify-center text-2xl">
+          {/* Kamu bisa pakai icon string atau icon lucide di sini */}
+          {icon}
+        </div>
+        <div className={`px-2 py-1 rounded-lg text-xs font-medium ${
+          isPositive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+        }`}>
+          {change}
+        </div>
       </div>
-      <div className="pr-16">
-        <p className="text-gray-600 text-sm font-medium">{title}</p>
-        <p className="text-3xl font-bold text-gray-900 mt-2 whitespace-nowrap">{value}</p>
-        <p
-          className={`text-sm mt-2 ${
-            changeType === 'positive' ? 'text-green-600' : 'text-red-600'
-          }`}
-        >
-          {changeType === 'positive' ? '↑' : '↓'} {change}
-        </p>
+      <div>
+        <h3 className="text-2xl font-bold text-[#3E2C1C] mb-1">{value}</h3>
+        <p className="text-sm font-medium text-[#3E2C1C] mb-1">{title}</p>
+        <p className="text-xs text-[#78675C]">vs kemarin</p>
       </div>
     </div>
   );
-}
+};
+
+export default StatCard;

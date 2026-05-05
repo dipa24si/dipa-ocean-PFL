@@ -1,16 +1,14 @@
 import { Navigate } from 'react-router-dom';
 
-/**
- * Protected Route Component
- * Melindungi routes yang memerlukan autentikasi
- */
 export default function ProtectedRoute({ children }) {
-  const token = localStorage.getItem('authToken');
+  // Cek apakah di browser tersimpan status login
+  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
 
-  if (!token) {
-    // Redirect ke login jika tidak ada token
+  if (!isLoggedIn) {
+    // Jika tidak ada data login, paksa user kembali ke halaman login
     return <Navigate to="/login" replace />;
   }
 
+  // Jika sudah login, izinkan akses ke halaman yang diminta
   return children;
 }

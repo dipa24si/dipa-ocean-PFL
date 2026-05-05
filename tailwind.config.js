@@ -7,8 +7,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        // Custom Fonts
-        'sans': ['Segoe UI', 'system-ui', 'sans-serif'],
+        'sans': ['Inter', 'Segoe UI', 'sans-serif'], 
         'display': ['Playfair Display', 'serif'],
         'mono': ['JetBrains Mono', 'monospace'],
         'poppins': ['Poppins', 'sans-serif'],
@@ -17,16 +16,16 @@ export default {
       colors: {
         // Coffee Shop Theme - Custom Colors
         'coffee': {
-          50: '#FAF5F0',
+          50: '#FDF8F5',  
           100: '#F5E6D3',
           200: '#E8CBA8',
           300: '#DBA77D',
           400: '#CE8352',
-          500: '#C15D27', // Primary
+          500: '#C15D27', 
           600: '#A94D1F',
           700: '#8A3A17',
           800: '#6B2910',
-          900: '#4C1A08',
+          900: '#3E2C1C', 
         },
         'brew': {
           50: '#FFFBF0',
@@ -34,7 +33,7 @@ export default {
           200: '#FFE4B5',
           300: '#FFD580',
           400: '#FFC54B',
-          500: '#FFB819', // Accent
+          500: '#FFB819', 
           600: '#CC9200',
           700: '#996D00',
           800: '#664800',
@@ -46,15 +45,12 @@ export default {
           200: '#D0C0B0',
           300: '#B8A088',
           400: '#9A8060',
-          500: '#7A6248', // Secondary
+          500: '#7A6248', 
           600: '#5F4E3A',
           700: '#463A2C',
           800: '#2D251D',
           900: '#1A0F0A',
         },
-      },
-      backgroundColor: {
-        'gradient-coffee': 'linear-gradient(135deg, #C15D27 0%, #FFB819 100%)',
       },
     },
   },

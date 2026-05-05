@@ -1,148 +1,54 @@
-import { useNavigate } from 'react-router-dom';
-import { FiBell, FiSettings, FiLogOut } from 'react-icons/fi';
-import { MdNotifications, MdAccountCircle } from 'react-icons/md';
-import { useState } from 'react';
+import React from 'react';
+import { Search, Bell, ChevronDown, Menu as MenuIcon } from 'lucide-react';
 
-/**
- * Navbar Component dengan React Icons
- * Header bar dengan greeting, notifications, dan user menu
- */
-export default function Navbar({ onToggleSidebar, sidebarOpen }) {
-  const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-  const [showMenu, setShowMenu] = useState(false);
-
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Selamat pagi';
-    if (hour < 17) return 'Selamat siang';
-    return 'Selamat malam';
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
-    navigate('/login');
-  };
-
-  const isAvatarImage = (value) => {
-    return typeof value === 'string' && (value.startsWith('http') || value.startsWith('/') || value.startsWith('data:'));
-  };
-
-  const renderAvatar = () => {
-    if (isAvatarImage(user.avatar)) {
-      return (
-        <img
-          src={user.avatar}
-          alt={user.name || 'Profile'}
-          className="w-full h-full object-cover rounded-full"
-        />
-      );
-    }
-
-    return user.avatar || 'JD';
-  };
-
+const Navbar = ({ onToggleSidebar }) => {
   return (
-    <header className="bg-white border-b border-espresso-200 sticky top-0 z-40 shadow-sm">
-      <div className="flex items-center justify-between px-6 py-4">
-        {/* Left Side - Toggle & Greeting */}
-        <div className="flex items-center space-x-4">
-          <button
+    <header className="bg-white/80 backdrop-blur-md border-b border-[#3E2C1C]/10 sticky top-0 z-40 px-8 py-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <button 
             onClick={onToggleSidebar}
-            className="p-2 hover:bg-espresso-100 rounded-lg transition-colors text-espresso-700"
-            title={sidebarOpen ? 'Tutup sidebar' : 'Buka sidebar'}
+            className="p-2 hover:bg-[#FDF8F5] rounded-lg text-[#3E2C1C] lg:hidden"
           >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
+            <MenuIcon size={20} />
           </button>
-
-          <div className="hidden md:block">
-            <h1 className="text-2xl font-bold font-display text-espresso-900">
-              {getGreeting()}, {user.name?.split(' ')[0] || 'Dipa'}! ☀️
-            </h1>
-            <p className="text-sm text-espresso-600">
-              Berikut ringkasan kafe Anda hari ini
-            </p>
+          
+          <div className="relative hidden md:block w-80">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#78675C]" size={16} />
+            <input 
+              type="text" 
+              placeholder="Cari pesanan, stok, atau pelanggan..." 
+              className="w-full bg-[#FDF8F5] border-none rounded-xl py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-[#3E2C1C]/20 outline-none"
+            />
           </div>
         </div>
 
-        {/* Right Side - Notifications & Profile */}
-        <div className="flex items-center space-x-4">
-          {/* Notifications */}
-          <button className="relative p-2 hover:bg-espresso-100 rounded-lg transition-colors text-espresso-700" title="Notifikasi">
-            <FiBell className="w-6 h-6" />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+        <div className="flex items-center gap-3">
+          {/* Notification */}
+          <button className="relative p-2 text-[#78675C] hover:bg-[#FDF8F5] rounded-xl transition-colors">
+            <Bell size={20} />
+            <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 border-2 border-white text-white text-[9px] flex items-center justify-center rounded-full font-bold">
+              3
+            </span>
           </button>
 
-          {/* Settings */}
-          <button 
-            onClick={() => navigate('/settings')}
-            className="p-2 hover:bg-espresso-100 rounded-lg transition-colors text-espresso-700" 
-            title="Pengaturan"
-          >
-            <FiSettings className="w-6 h-6" />
-          </button>
+          <div className="h-8 w-[1px] bg-[#3E2C1C]/10 mx-2"></div>
 
-          {/* User Menu */}
-          <div className="relative">
-            <button
-              onClick={() => setShowMenu(!showMenu)}
-              className="flex items-center space-x-2 p-2 hover:bg-espresso-100 rounded-lg transition-colors"
-            >
-              <div className="w-8 h-8 bg-gradient-to-br from-coffee-600 to-brew-500 rounded-full overflow-hidden flex items-center justify-center text-xs font-bold text-white">
-                {renderAvatar()}
-              </div>
-              <span className="hidden sm:inline text-sm font-medium text-espresso-900">{user.name?.split(' ')[0] || 'Dipa'}</span>
-            </button>
-
-            {/* Dropdown Menu */}
-            {showMenu && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-espresso-200 py-1 z-50">
-                <button 
-                  onClick={() => {
-                    navigate('/dashboard');
-                    setShowMenu(false);
-                  }}
-                  className="w-full text-left px-4 py-2 hover:bg-espresso-50 flex items-center gap-2 text-espresso-700"
-                >
-                  <MdAccountCircle className="w-5 h-5" />
-                  <span>Profil</span>
-                </button>
-                <button 
-                  onClick={() => {
-                    navigate('/settings');
-                    setShowMenu(false);
-                  }}
-                  className="w-full text-left px-4 py-2 hover:bg-espresso-50 flex items-center gap-2 text-espresso-700"
-                >
-                  <FiSettings className="w-5 h-5" />
-                  <span>Pengaturan</span>
-                </button>
-                <div className="border-t border-espresso-200"></div>
-                <button
-                  onClick={handleLogout}
-                  className="w-full text-left px-4 py-2 hover:bg-red-50 flex items-center gap-2 text-red-600 font-medium"
-                >
-                  <FiLogOut className="w-5 h-5" />
-                  <span>Logout</span>
-                </button>
-              </div>
-            )}
+          {/* Profile */}
+          <div className="flex items-center gap-3 pl-2 hover:bg-[#FDF8F5] p-1.5 rounded-xl cursor-pointer transition-colors group">
+            <div className="text-right hidden sm:block">
+              <p className="text-sm font-bold text-[#3E2C1C]">John Doe</p>
+              <p className="text-[10px] text-[#78675C] font-medium">Owner</p>
+            </div>
+            <div className="w-10 h-10 bg-[#3E2C1C] rounded-full border-2 border-[#FDF8F5] flex items-center justify-center text-white text-xs font-bold shadow-sm">
+              JD
+            </div>
+            <ChevronDown size={14} className="text-[#78675C] group-hover:translate-y-0.5 transition-transform" />
           </div>
         </div>
       </div>
     </header>
   );
-}
+};
+
+export default Navbar;

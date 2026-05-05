@@ -3,17 +3,12 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 
-/**
- * MainLayout Component
- * Digunakan untuk halaman utama yang memerlukan sidebar dan navigation
- * Mendukung responsive design dengan Tailwind CSS
- * Menggunakan custom colors dari Tailwind config
- */
-export default function MainLayout({ children }) {
+export default function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
-    <div className="flex h-screen bg-espresso-50">
+    // Kita ganti bg-espresso-50 menjadi warna krem kopi yang konsisten
+    <div className="flex h-screen bg-[#FDF8F5]">
       {/* Sidebar */}
       <Sidebar isOpen={sidebarOpen} />
 
@@ -27,7 +22,8 @@ export default function MainLayout({ children }) {
 
         {/* Page Content */}
         <main className="flex-1 overflow-auto">
-          <div className="p-6 lg:p-8 max-w-7xl mx-auto">
+          {/* Tambahkan transisi halus saat konten dimuat */}
+          <div className="p-6 lg:p-8 max-w-7xl mx-auto animate-in fade-in duration-500">
             <Outlet />
           </div>
         </main>

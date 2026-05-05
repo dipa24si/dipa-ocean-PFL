@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import PageHeader from '../components/PageHeader';
-import { FiPlus, FiSearch, FiEdit, FiTrash2 } from 'react-icons/fi';
+import { FiPlus, FiSearch, FiEdit, FiTrash2, FiTag, FiCheckCircle, FiXCircle } from 'react-icons/fi';
 
 const productIcons = {
   Coffee: '☕',
@@ -11,6 +11,7 @@ const productIcons = {
   Tea: '🍵'
 };
 
+// ... (Gunakan fungsi generateInitialProducts dan defaultProduct kamu yang sudah ada)
 const generateInitialProducts = () => {
   const products = [
     { name: 'Espresso', category: 'Coffee', price: 15000, description: 'Kopi espresso klasik dengan rasa kuat dan kaya' },
@@ -41,18 +42,8 @@ const generateInitialProducts = () => {
   });
 };
 
-const defaultProduct = {
-  name: '',
-  category: 'Coffee',
-  price: '',
-  description: '',
-  available: true
-};
+const defaultProduct = { name: '', category: 'Coffee', price: '', description: '', available: true };
 
-/**
- * Products Page Component
- * Halaman untuk mengelola menu produk
- */
 export default function Products() {
   const [products, setProducts] = useState(generateInitialProducts);
   const [searchTerm, setSearchTerm] = useState('');
@@ -63,6 +54,7 @@ export default function Products() {
 
   const categories = ['all', ...new Set(products.map((p) => p.category))];
 
+  // Logika Filter
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          product.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -70,15 +62,10 @@ export default function Products() {
     return matchesSearch && matchesCategory;
   });
 
+  // Handlers (Tetap pakai logika kamu yang sudah jalan)
   const startEditProduct = (product) => {
     setEditingProductId(product.id);
-    setNewProduct({
-      name: product.name,
-      category: product.category,
-      price: product.price,
-      description: product.description,
-      available: product.available
-    });
+    setNewProduct({ ...product });
     setShowAddForm(true);
   };
 
@@ -95,187 +82,141 @@ export default function Products() {
   const handleSubmitProduct = (e) => {
     e.preventDefault();
     if (!newProduct.name || !newProduct.price) return;
-
     const productData = {
+      ...newProduct,
       id: editingProductId || products.length + 1,
-      name: newProduct.name,
-      category: newProduct.category,
-      price: newProduct.price.trim().startsWith('Rp') ? newProduct.price.trim() : `Rp ${newProduct.price.trim()}`,
-      description: newProduct.description,
+      price: newProduct.price.toString().startsWith('Rp') ? newProduct.price : `Rp ${newProduct.price}`,
       image: productIcons[newProduct.category] || '🍽️',
-      available: newProduct.available
     };
-
     if (editingProductId) {
-      setProducts(products.map((product) =>
-        product.id === editingProductId ? productData : product
-      ));
-      cancelEditProduct();
-      return;
+      setProducts(products.map((p) => (p.id === editingProductId ? productData : p)));
+    } else {
+      setProducts([productData, ...products]);
     }
-
-    setProducts([productData, ...products]);
-    setShowAddForm(false);
-    setNewProduct(defaultProduct);
+    cancelEditProduct();
   };
 
   return (
-    <>
-      <PageHeader
-        title="Menu Produk"
-        breadcrumb={[
-          { label: 'Dashboard', path: '/dashboard' },
-          { label: 'Menu Produk' }
-        ]}
-      >
+    <div className="animate-in fade-in duration-500">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <PageHeader title="Menu Kopi & Produk" breadcrumb="Products" />
         <button
-          onClick={() => setShowAddForm((prev) => !prev)}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-coffee-600 text-white rounded-lg hover:bg-coffee-700 transition-colors"
+          onClick={() => setShowAddForm(!showAddForm)}
+          className="flex items-center justify-center gap-2 px-6 py-3 bg-coffee-900 text-white rounded-2xl font-bold hover:bg-black transition-all shadow-lg shadow-coffee-900/20 active:scale-95"
         >
-          <FiPlus className="w-4 h-4" />
-          Tambah Produk
+          <FiPlus /> {showAddForm ? 'Tutup Form' : 'Tambah Menu'}
         </button>
-      </PageHeader>
+      </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-espresso-200 p-6 mb-6 space-y-6">
-        <div className="flex flex-col sm:flex-row gap-4">
+      {/* Filter & Search Bar */}
+      <div className="bg-white rounded-3xl border border-coffee-100 p-4 mb-8 shadow-sm space-y-4">
+        <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-espresso-400 w-4 h-4" />
+            <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-espresso-400 w-5 h-5" />
             <input
               type="text"
-              placeholder="Cari produk..."
+              placeholder="Cari menu favorit..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-espresso-300 rounded-lg focus:ring-2 focus:ring-coffee-500 focus:border-transparent"
+              className="w-full pl-12 pr-4 py-3 bg-coffee-50 border-none rounded-2xl focus:ring-2 focus:ring-coffee-200 outline-none text-coffee-900 font-medium transition-all"
             />
           </div>
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-3 py-2 border border-espresso-300 rounded-lg focus:ring-2 focus:ring-coffee-500 focus:border-transparent"
-          >
-            <option value="all">Semua Kategori</option>
-            {categories.slice(1).map((category) => (
-              <option key={category} value={category}>{category}</option>
+          <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-5 py-3 rounded-2xl text-sm font-bold capitalize whitespace-nowrap transition-all ${
+                  selectedCategory === cat 
+                  ? 'bg-coffee-900 text-white shadow-md' 
+                  : 'bg-coffee-50 text-espresso-500 hover:bg-coffee-100'
+                }`}
+              >
+                {cat === 'all' ? 'Semua' : cat}
+              </button>
             ))}
-          </select>
+          </div>
         </div>
 
+        {/* Add Form with BrewMaster Style */}
         {showAddForm && (
-          <form onSubmit={handleSubmitProduct} className="bg-espresso-50 rounded-xl border border-espresso-200 p-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-              <div>
-                <label className="block text-sm font-medium text-espresso-700 mb-2">Nama Produk</label>
-                <input
-                  type="text"
-                  value={newProduct.name}
-                  onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-espresso-300 rounded-lg focus:ring-2 focus:ring-coffee-500 focus:border-transparent"
-                  placeholder="Contoh: Espresso"
-                />
+          <form onSubmit={handleSubmitProduct} className="bg-coffee-50/50 rounded-3xl p-6 border border-coffee-100 mt-4 animate-in slide-in-from-top-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-espresso-400 uppercase tracking-widest ml-1">Nama Produk</label>
+                <input type="text" value={newProduct.name} onChange={(e) => setNewProduct({...newProduct, name: e.target.value})} className="w-full px-4 py-3 rounded-xl border-none outline-none focus:ring-2 focus:ring-coffee-200 shadow-sm" />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-espresso-700 mb-2">Kategori</label>
-                <select
-                  value={newProduct.category}
-                  onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
-                  className="w-full px-3 py-2 border border-espresso-300 rounded-lg focus:ring-2 focus:ring-coffee-500 focus:border-transparent"
-                >
-                  <option value="Coffee">Coffee</option>
-                  <option value="Pastry">Pastry</option>
-                  <option value="Dessert">Dessert</option>
-                  <option value="Cold Drinks">Cold Drinks</option>
-                  <option value="Snack">Snack</option>
-                  <option value="Tea">Tea</option>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-espresso-400 uppercase tracking-widest ml-1">Kategori</label>
+                <select value={newProduct.category} onChange={(e) => setNewProduct({...newProduct, category: e.target.value})} className="w-full px-4 py-3 rounded-xl border-none outline-none focus:ring-2 focus:ring-coffee-200 shadow-sm font-bold text-coffee-900">
+                  {Object.keys(productIcons).map(cat => <option key={cat} value={cat}>{cat}</option>)}
                 </select>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-espresso-700 mb-2">Harga</label>
-                <input
-                  type="text"
-                  value={newProduct.price}
-                  onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-                  className="w-full px-3 py-2 border border-espresso-300 rounded-lg focus:ring-2 focus:ring-coffee-500 focus:border-transparent"
-                  placeholder="Rp 28.000"
-                />
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-espresso-400 uppercase tracking-widest ml-1">Harga (Rp)</label>
+                <input type="text" value={newProduct.price} onChange={(e) => setNewProduct({...newProduct, price: e.target.value})} className="w-full px-4 py-3 rounded-xl border-none outline-none focus:ring-2 focus:ring-coffee-200 shadow-sm" />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-espresso-700 mb-2">Status Ketersediaan</label>
-                <select
-                  value={newProduct.available ? 'available' : 'unavailable'}
-                  onChange={(e) => setNewProduct({ ...newProduct, available: e.target.value === 'available' })}
-                  className="w-full px-3 py-2 border border-espresso-300 rounded-lg focus:ring-2 focus:ring-coffee-500 focus:border-transparent"
+              <div className="md:col-span-2 space-y-2">
+                <label className="text-xs font-bold text-espresso-400 uppercase tracking-widest ml-1">Deskripsi Produk</label>
+                <input type="text" value={newProduct.description} onChange={(e) => setNewProduct({...newProduct, description: e.target.value})} className="w-full px-4 py-3 rounded-xl border-none outline-none focus:ring-2 focus:ring-coffee-200 shadow-sm" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-espresso-400 uppercase tracking-widest ml-1">Ketersediaan</label>
+                <button 
+                  type="button" 
+                  onClick={() => setNewProduct({...newProduct, available: !newProduct.available})}
+                  className={`w-full py-3 rounded-xl font-bold transition-all ${newProduct.available ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
                 >
-                  <option value="available">Tersedia</option>
-                  <option value="unavailable">Habis</option>
-                </select>
-              </div>
-              <div className="lg:col-span-2">
-                <label className="block text-sm font-medium text-espresso-700 mb-2">Deskripsi</label>
-                <textarea
-                  value={newProduct.description}
-                  onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
-                  rows={3}
-                  className="w-full px-3 py-2 border border-espresso-300 rounded-lg focus:ring-2 focus:ring-coffee-500 focus:border-transparent"
-                  placeholder="Contoh: Latte dingin dengan rasa lembut"
-                />
+                  {newProduct.available ? '🟢 Tersedia' : '🔴 Habis'}
+                </button>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3">
-              <button
-                type="button"
-                onClick={cancelEditProduct}
-                className="px-4 py-2 rounded-lg border border-espresso-300 text-espresso-800 hover:bg-espresso-50 transition-colors"
-              >
-                Batal
-              </button>
-              <button
-                type="submit"
-                className="px-4 py-2 rounded-lg bg-coffee-600 text-white hover:bg-coffee-700 transition-colors"
-              >
-                {editingProductId ? 'Simpan Perubahan' : 'Tambah Produk'}
+            <div className="flex justify-end gap-3">
+              <button type="button" onClick={cancelEditProduct} className="px-6 py-2 font-bold text-espresso-400 hover:text-red-500 transition-colors">Batal</button>
+              <button type="submit" className="px-8 py-3 bg-coffee-900 text-white rounded-xl font-bold shadow-lg shadow-coffee-900/20 active:scale-95">
+                {editingProductId ? 'Update Menu' : 'Simpan Menu Baru'}
               </button>
             </div>
           </form>
         )}
       </div>
 
+      {/* Product Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredProducts.map((product) => (
-          <div key={product.id} className="bg-white rounded-lg shadow-sm border border-espresso-200 overflow-hidden hover:shadow-md transition-shadow">
-            <div className="aspect-square bg-gradient-to-br from-coffee-50 to-brew-50 flex items-center justify-center text-6xl">
+          <div key={product.id} className="bg-white rounded-[2.5rem] border border-coffee-100 p-5 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group overflow-hidden">
+            <div className="aspect-[4/3] bg-gradient-to-br from-coffee-50 to-white rounded-3xl flex items-center justify-center text-7xl mb-5 group-hover:scale-105 transition-transform duration-500">
               {product.image}
             </div>
-            <div className="p-4">
-              <div className="flex items-start justify-between mb-2">
-                <h3 className="font-semibold text-espresso-900">{product.name}</h3>
-                <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                  product.available
-                    ? 'bg-green-100 text-green-800'
-                    : 'bg-red-100 text-red-800'
-                }`}>
-                  {product.available ? 'Tersedia' : 'Habis'}
-                </span>
+            
+            <div className="space-y-3">
+              <div className="flex items-start justify-between">
+                <div>
+                  <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-tighter text-espresso-400 mb-1">
+                    <FiTag size={10} /> {product.category}
+                  </span>
+                  <h3 className="font-bold text-coffee-900 text-lg leading-tight group-hover:text-coffee-600 transition-colors">
+                    {product.name}
+                  </h3>
+                </div>
+                <div className={`p-1 rounded-full ${product.available ? 'text-green-500' : 'text-red-400'}`}>
+                  {product.available ? <FiCheckCircle size={20} /> : <FiXCircle size={20} />}
+                </div>
               </div>
-              <p className="text-sm text-espresso-600 mb-2">{product.category}</p>
-              <p className="text-sm text-espresso-700 mb-3 line-clamp-2">{product.description}</p>
-              <div className="flex items-center justify-between">
-                <span className="text-lg font-bold text-coffee-600">{product.price}</span>
-                <div className="flex gap-1">
-                  <button
-                  type="button"
-                  onClick={() => startEditProduct(product)}
-                  className="p-2 text-espresso-600 hover:text-coffee-600 hover:bg-coffee-50 rounded transition-colors"
-                >
-                  <FiEdit className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => removeProduct(product.id)}
-                  className="p-2 text-espresso-600 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-                >
-                  <FiTrash2 className="w-4 h-4" />
-                </button>
+
+              <p className="text-xs text-espresso-500 font-medium line-clamp-2 min-h-[2.5rem]">
+                {product.description}
+              </p>
+
+              <div className="pt-4 flex items-center justify-between border-t border-coffee-50">
+                <span className="text-xl font-black text-coffee-900">{product.price}</span>
+                <div className="flex gap-2">
+                  <button onClick={() => startEditProduct(product)} className="p-3 bg-coffee-50 text-coffee-900 rounded-2xl hover:bg-coffee-900 hover:text-white transition-all">
+                    <FiEdit size={16} />
+                  </button>
+                  <button onClick={() => removeProduct(product.id)} className="p-3 bg-red-50 text-red-500 rounded-2xl hover:bg-red-500 hover:text-white transition-all">
+                    <FiTrash2 size={16} />
+                  </button>
                 </div>
               </div>
             </div>
@@ -284,12 +225,12 @@ export default function Products() {
       </div>
 
       {filteredProducts.length === 0 && (
-        <div className="text-center py-12">
-          <div className="text-6xl mb-4">🍽️</div>
-          <h3 className="text-lg font-medium text-espresso-900 mb-2">Tidak ada produk ditemukan</h3>
-          <p className="text-espresso-600">Coba ubah kata kunci pencarian atau kategori.</p>
+        <div className="text-center py-24 bg-white rounded-[3rem] border border-dashed border-coffee-200">
+          <div className="text-7xl mb-4 grayscale opacity-20">☕</div>
+          <h3 className="text-xl font-bold text-coffee-900">Menu tidak ditemukan</h3>
+          <p className="text-espresso-400">Coba cari dengan kata kunci lain.</p>
         </div>
       )}
-    </>
+    </div>
   );
 }
