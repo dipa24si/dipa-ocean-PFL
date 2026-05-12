@@ -11,11 +11,9 @@ export default function LoginV2() {
 
     // LOGIN SIMULASI
     if (email === 'admin@mail.com' && password === 'admin123') {
-      // Kita simpan status login di browser
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('userEmail', email);
       
-      // Arahkan ke dashboard
       navigate('/dashboard');
     } else {
       alert('Email: admin@mail.com | Pass: admin123');

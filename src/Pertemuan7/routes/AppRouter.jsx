@@ -12,6 +12,7 @@ const Orders = lazy(() => import('../pages/Orders'));
 const Inventory = lazy(() => import('../pages/Inventory'));
 const Products = lazy(() => import('../pages/Products'));
 const Staff = lazy(() => import('../pages/Staff'));
+const CustomerDetail = lazy(() => import('../pages/CustomerDetail'));
 const Customers = lazy(() => import('../pages/Customers')); // ✅ Import Customers
 const Analytics = lazy(() => import('../pages/Analytics'));
 const Settings = lazy(() => import('../pages/Settings'));
@@ -65,6 +66,7 @@ export default function AppRouter() {
           <Route path="orders" element={<Orders />} />
           <Route path="inventory" element={<Inventory />} />
           <Route path="products" element={<Products />} />
+          <Route path="customers/:id" element={<CustomerDetail />} />
           <Route path="customers" element={<Customers />} /> {/* ✅ Rute Customers Aktif */}
           <Route path="staff" element={<Staff />} />
           <Route path="analytics" element={<Analytics />} />

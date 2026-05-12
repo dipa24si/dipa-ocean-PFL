@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import PageHeader from '../components/PageHeader';
-import { FiSearch, FiMail, FiPhone, FiStar, FiShoppingBag } from 'react-icons/fi';
+import { FiSearch, FiMail, FiPhone, FiShoppingBag } from 'react-icons/fi';
+import brewCustomers from '../data/brewCustomers.json';
 
 export default function Customers() {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const customers = [
-    { id: 1, name: 'Budi Setiawan', email: 'budi@gmail.com', phone: '0812345678', totalOrders: 15, loyalty: 'Gold' },
-    { id: 2, name: 'Ani Wijaya', email: 'ani@yahoo.com', phone: '0857889900', totalOrders: 5, loyalty: 'Silver' },
-    { id: 3, name: 'Santi Putri', email: 'santi@outlook.com', phone: '0813445566', totalOrders: 28, loyalty: 'Platinum' },
-  ];
+  const customers = brewCustomers.filter((customer) =>
+    customer.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const getPhotoUrl = (customer) => {
+    return `https://randomuser.me/api/portraits/${customer.gender}/${customer.id + 20}.jpg`;
+  };
 
   return (
     <div className="animate-in fade-in duration-500">
@@ -22,6 +26,7 @@ export default function Customers() {
             type="text"
             placeholder="Cari nama pelanggan..."
             className="w-full pl-12 pr-4 py-3 bg-coffee-50 border-none rounded-2xl outline-none"
+            value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
@@ -31,13 +36,24 @@ export default function Customers() {
         {customers.map((c) => (
           <div key={c.id} className="bg-white rounded-[2rem] border border-coffee-100 p-6 shadow-sm group">
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-14 h-14 bg-coffee-900 rounded-full flex items-center justify-center text-white text-xl font-bold">
-                {c.name.charAt(0)}
-              </div>
+              <img
+                src={getPhotoUrl(c)}
+                alt={c.name}
+                onError={(event) => {
+                  event.currentTarget.src = '/avatar.svg';
+                }}
+                className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-md"
+              />
               <div>
-                <h3 className="font-bold text-coffee-900">{c.name}</h3>
+                <Link to={`/customers/${c.id}`} className="font-bold text-coffee-900 hover:underline">
+                  {c.name}
+                </Link>
                 <span className={`text-[10px] font-black px-2 py-0.5 rounded-lg uppercase ${
-                  c.loyalty === 'Platinum' ? 'bg-purple-100 text-purple-700' : 'bg-orange-100 text-orange-700'
+                  c.loyalty === 'Platinum'
+                    ? 'bg-purple-100 text-purple-700'
+                    : c.loyalty === 'Silver'
+                      ? 'bg-gray-100 text-gray-700'
+                      : 'bg-orange-100 text-orange-700'
                 }`}>
                   {c.loyalty} Member
                 </span>
