@@ -27,7 +27,7 @@ export default function LoginV2() {
           <div className="w-20 h-20 bg-coffee-900 rounded-3xl flex items-center justify-center text-4xl text-white mx-auto shadow-lg shadow-coffee-900/20">
             ☕
           </div>
-          <h2 className="text-2xl font-black text-coffee-900 mt-6 uppercase tracking-tight">BrewMaster</h2>
+          <h2 className="text-2xl font-black text-coffee-900 mt-6 uppercase tracking-tight">Format Ganjil</h2>
           <p className="text-espresso-400 text-sm font-medium">Masuk untuk kelola tokomu</p>
         </div>
 

@@ -9,7 +9,11 @@ export default function Orders() {
       <div className="bg-white p-6 rounded-2xl border border-[#3E2C1C]/10 mb-8">
         <p className="text-[#78675C]">Filter tanggal dan status pesanan di sini...</p>
       </div>
-      <RecentOrders /> {/* Re-use komponen yang sudah kita buat tadi */}
+      <RecentOrders
+        totalOrders={30}
+        title="Daftar Pesanan"
+        showViewAll={false}
+      />
     </>
   );
 }

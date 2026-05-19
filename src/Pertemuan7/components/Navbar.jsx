@@ -1,7 +1,52 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Search, Bell, ChevronDown, Menu as MenuIcon } from 'lucide-react';
 
+const defaultUser = {
+  name: 'Dipa Tranggana',
+  role: 'Owner',
+  avatar: 'DT',
+};
+
+const getSavedUser = () => {
+  try {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? { ...defaultUser, ...JSON.parse(savedUser) } : defaultUser;
+  } catch {
+    return defaultUser;
+  }
+};
+
+const getInitials = (name) => {
+  return name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join('')
+    .toUpperCase();
+};
+
+const isAvatarImage = (value) => {
+  return typeof value === 'string' && (value.startsWith('http') || value.startsWith('data:image'));
+};
+
 const Navbar = ({ onToggleSidebar }) => {
+  const [user, setUser] = useState(getSavedUser);
+
+  useEffect(() => {
+    const syncUser = () => setUser(getSavedUser());
+
+    window.addEventListener('storage', syncUser);
+    window.addEventListener('profile-updated', syncUser);
+
+    return () => {
+      window.removeEventListener('storage', syncUser);
+      window.removeEventListener('profile-updated', syncUser);
+    };
+  }, []);
+
+  const initials = getInitials(user.name) || 'DT';
+
   return (
     <header className="bg-white/80 backdrop-blur-md border-b border-[#3E2C1C]/10 sticky top-0 z-40 px-8 py-3">
       <div className="flex items-center justify-between">
@@ -37,11 +82,15 @@ const Navbar = ({ onToggleSidebar }) => {
           {/* Profile */}
           <div className="flex items-center gap-3 pl-2 hover:bg-[#FDF8F5] p-1.5 rounded-xl cursor-pointer transition-colors group">
             <div className="text-right hidden sm:block">
-              <p className="text-sm font-bold text-[#3E2C1C]">John Doe</p>
-              <p className="text-[10px] text-[#78675C] font-medium">Owner</p>
+              <p className="text-sm font-bold text-[#3E2C1C]">{user.name}</p>
+              <p className="text-[10px] text-[#78675C] font-medium">{user.role}</p>
             </div>
-            <div className="w-10 h-10 bg-[#3E2C1C] rounded-full border-2 border-[#FDF8F5] flex items-center justify-center text-white text-xs font-bold shadow-sm">
-              JD
+            <div className="w-10 h-10 bg-[#3E2C1C] rounded-full border-2 border-[#FDF8F5] flex items-center justify-center text-white text-xs font-bold shadow-sm overflow-hidden">
+              {isAvatarImage(user.avatar) ? (
+                <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+              ) : (
+                initials
+              )}
             </div>
             <ChevronDown size={14} className="text-[#78675C] group-hover:translate-y-0.5 transition-transform" />
           </div>

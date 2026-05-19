@@ -7,7 +7,7 @@ import PageHeader from '../components/PageHeader';
 
 /**
  * Dashboard Page Component
- * Halaman utama yang sudah disesuaikan dengan tema BrewMaster (Coffee)
+ * Halaman utama yang sudah disesuaikan dengan tema Format Ganjil (Coffee)
  */
 export default function Dashboard() {
   return (
@@ -66,7 +66,7 @@ export default function Dashboard() {
       {/* Tabel Pesanan Terbaru */}
       <RecentOrders />
 
-      {/* AI Insights Section - Desain BrewMaster */}
+      {/* AI Insights Section - Desain Format Ganjil */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Insight 1: Analisis Market */}
         <div className="bg-white border border-[#3E2C1C]/10 rounded-2xl shadow-sm p-6 relative overflow-hidden group hover:shadow-md transition-all">
@@ -116,7 +116,7 @@ export default function Dashboard() {
       {/* Footer Dashboard */}
       <div className="mt-12 pb-8 flex flex-col items-center border-t border-[#3E2C1C]/5 pt-6">
         <p className="text-[#78675C] text-[10px] uppercase tracking-[0.2em] font-semibold">
-          BrewMaster Management System
+          Format Ganjil Management System
         </p>
         <p className="text-[#78675C]/50 text-[10px] mt-1">
           v1.0.4 • Terakhir diperbarui {new Date().toLocaleTimeString('id-ID')}

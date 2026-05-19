@@ -19,7 +19,7 @@ const Settings = lazy(() => import('../pages/Settings'));
 const Login = lazy(() => import('../pages/Login'));
 
 /**
- * Loading Fallback Component - Tema BrewMaster
+ * Loading Fallback Component - Tema Format Ganjil
  */
 function PageLoadingSpinner() {
   return (
@@ -34,7 +34,7 @@ function PageLoadingSpinner() {
             ☕
           </div>
         </div>
-        <h2 className="text-[#3E2C1C] font-bold text-lg mt-6 tracking-widest uppercase">BrewMaster</h2>
+        <h2 className="text-[#3E2C1C] font-bold text-lg mt-6 tracking-widest uppercase">Format Ganjil</h2>
         <p className="text-[#78675C] text-sm mt-2 animate-pulse">Menyiapkan dashboard kamu...</p>
       </div>
     </div>

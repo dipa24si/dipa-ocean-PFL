@@ -1,17 +1,34 @@
 import { useState } from 'react';
 import PageHeader from '../components/PageHeader';
-import { FiPlus, FiSearch, FiEdit, FiTrash2, FiTag, FiCheckCircle, FiXCircle } from 'react-icons/fi';
+import CategoryFilter from '../components/CategoryFilter';
+import EmptyState from '../components/EmptyState';
+import ProductCard from '../components/ProductCard';
+import ProductForm from '../components/ProductForm';
+import SearchInput from '../components/SearchInput';
+import { FiPlus } from 'react-icons/fi';
 
-const productIcons = {
-  Coffee: '☕',
-  Pastry: '🥐',
-  Dessert: '🍰',
-  'Cold Drinks': '🧊',
-  Snack: '🥪',
-  Tea: '🍵'
+const productImages = {
+  Espresso: 'https://images.unsplash.com/photo-1510707577719-ae7c14805e3a?auto=format&fit=crop&w=900&q=80',
+  Cappuccino: 'https://images.unsplash.com/photo-1534778101976-62847782c213?auto=format&fit=crop&w=900&q=80',
+  Latte: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=900&q=80',
+  Americano: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80',
+  Croissant: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=900&q=80',
+  'Muffin Blueberry': 'https://images.unsplash.com/photo-1607958996333-41aef7caefaa?auto=format&fit=crop&w=900&q=80',
+  'Chocolate Cake': 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=80',
+  Cheesecake: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=900&q=80',
+  'Iced Latte': 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=900&q=80',
+  'Iced Tea': 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=900&q=80',
 };
 
-// ... (Gunakan fungsi generateInitialProducts dan defaultProduct kamu yang sudah ada)
+const categoryImages = {
+  Coffee: productImages.Latte,
+  Pastry: productImages.Croissant,
+  Dessert: productImages['Chocolate Cake'],
+  'Cold Drinks': productImages['Iced Latte'],
+  Snack: productImages.Croissant,
+  Tea: productImages['Iced Tea'],
+};
+
 const generateInitialProducts = () => {
   const products = [
     { name: 'Espresso', category: 'Coffee', price: 15000, description: 'Kopi espresso klasik dengan rasa kuat dan kaya' },
@@ -23,7 +40,7 @@ const generateInitialProducts = () => {
     { name: 'Chocolate Cake', category: 'Dessert', price: 35000, description: 'Kue coklat dengan frosting krim yang lezat' },
     { name: 'Cheesecake', category: 'Dessert', price: 37000, description: 'Cheesecake lembut dengan lapisan keju krim' },
     { name: 'Iced Latte', category: 'Cold Drinks', price: 28000, description: 'Latte dingin dengan es yang menyegarkan' },
-    { name: 'Iced Tea', category: 'Cold Drinks', price: 18000, description: 'Teh dingin manis dengan aroma lemon segar' }
+    { name: 'Iced Tea', category: 'Cold Drinks', price: 18000, description: 'Teh dingin manis dengan aroma lemon segar' },
   ];
 
   return Array.from({ length: 30 }, (_, index) => {
@@ -36,8 +53,8 @@ const generateInitialProducts = () => {
       category: base.category,
       price: `Rp ${price.toLocaleString('id-ID')}`,
       description: base.description,
-      image: productIcons[base.category] || '🍽️',
-      available: index % 7 !== 0
+      image: productImages[base.name] || categoryImages[base.category],
+      available: index % 7 !== 0,
     };
   });
 };
@@ -52,17 +69,15 @@ export default function Products() {
   const [newProduct, setNewProduct] = useState(defaultProduct);
   const [editingProductId, setEditingProductId] = useState(null);
 
-  const categories = ['all', ...new Set(products.map((p) => p.category))];
+  const categories = ['all', ...new Set(products.map((product) => product.category))];
 
-  // Logika Filter
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchTerm.toLowerCase());
+      product.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
-  // Handlers (Tetap pakai logika kamu yang sudah jalan)
   const startEditProduct = (product) => {
     setEditingProductId(product.id);
     setNewProduct({ ...product });
@@ -79,17 +94,19 @@ export default function Products() {
     setProducts(products.filter((product) => product.id !== productId));
   };
 
-  const handleSubmitProduct = (e) => {
-    e.preventDefault();
+  const handleSubmitProduct = (event) => {
+    event.preventDefault();
     if (!newProduct.name || !newProduct.price) return;
+
     const productData = {
       ...newProduct,
       id: editingProductId || products.length + 1,
       price: newProduct.price.toString().startsWith('Rp') ? newProduct.price : `Rp ${newProduct.price}`,
-      image: productIcons[newProduct.category] || '🍽️',
+      image: categoryImages[newProduct.category],
     };
+
     if (editingProductId) {
-      setProducts(products.map((p) => (p.id === editingProductId ? productData : p)));
+      setProducts(products.map((product) => (product.id === editingProductId ? productData : product)));
     } else {
       setProducts([productData, ...products]);
     }
@@ -101,6 +118,7 @@ export default function Products() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <PageHeader title="Menu Kopi & Produk" breadcrumb="Products" />
         <button
+          type="button"
           onClick={() => setShowAddForm(!showAddForm)}
           className="flex items-center justify-center gap-2 px-6 py-3 bg-coffee-900 text-white rounded-2xl font-bold hover:bg-black transition-all shadow-lg shadow-coffee-900/20 active:scale-95"
         >
@@ -108,128 +126,51 @@ export default function Products() {
         </button>
       </div>
 
-      {/* Filter & Search Bar */}
       <div className="bg-white rounded-3xl border border-coffee-100 p-4 mb-8 shadow-sm space-y-4">
         <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1 relative">
-            <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-espresso-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Cari menu favorit..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-coffee-50 border-none rounded-2xl focus:ring-2 focus:ring-coffee-200 outline-none text-coffee-900 font-medium transition-all"
-            />
-          </div>
-          <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-5 py-3 rounded-2xl text-sm font-bold capitalize whitespace-nowrap transition-all ${
-                  selectedCategory === cat 
-                  ? 'bg-coffee-900 text-white shadow-md' 
-                  : 'bg-coffee-50 text-espresso-500 hover:bg-coffee-100'
-                }`}
-              >
-                {cat === 'all' ? 'Semua' : cat}
-              </button>
-            ))}
-          </div>
+          <SearchInput
+            value={searchTerm}
+            onChange={setSearchTerm}
+            placeholder="Cari menu favorit..."
+            className="flex-1"
+          />
+          <CategoryFilter
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onSelect={setSelectedCategory}
+          />
         </div>
 
-        {/* Add Form with BrewMaster Style */}
         {showAddForm && (
-          <form onSubmit={handleSubmitProduct} className="bg-coffee-50/50 rounded-3xl p-6 border border-coffee-100 mt-4 animate-in slide-in-from-top-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-espresso-400 uppercase tracking-widest ml-1">Nama Produk</label>
-                <input type="text" value={newProduct.name} onChange={(e) => setNewProduct({...newProduct, name: e.target.value})} className="w-full px-4 py-3 rounded-xl border-none outline-none focus:ring-2 focus:ring-coffee-200 shadow-sm" />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-espresso-400 uppercase tracking-widest ml-1">Kategori</label>
-                <select value={newProduct.category} onChange={(e) => setNewProduct({...newProduct, category: e.target.value})} className="w-full px-4 py-3 rounded-xl border-none outline-none focus:ring-2 focus:ring-coffee-200 shadow-sm font-bold text-coffee-900">
-                  {Object.keys(productIcons).map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                </select>
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-espresso-400 uppercase tracking-widest ml-1">Harga (Rp)</label>
-                <input type="text" value={newProduct.price} onChange={(e) => setNewProduct({...newProduct, price: e.target.value})} className="w-full px-4 py-3 rounded-xl border-none outline-none focus:ring-2 focus:ring-coffee-200 shadow-sm" />
-              </div>
-              <div className="md:col-span-2 space-y-2">
-                <label className="text-xs font-bold text-espresso-400 uppercase tracking-widest ml-1">Deskripsi Produk</label>
-                <input type="text" value={newProduct.description} onChange={(e) => setNewProduct({...newProduct, description: e.target.value})} className="w-full px-4 py-3 rounded-xl border-none outline-none focus:ring-2 focus:ring-coffee-200 shadow-sm" />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-espresso-400 uppercase tracking-widest ml-1">Ketersediaan</label>
-                <button 
-                  type="button" 
-                  onClick={() => setNewProduct({...newProduct, available: !newProduct.available})}
-                  className={`w-full py-3 rounded-xl font-bold transition-all ${newProduct.available ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
-                >
-                  {newProduct.available ? '🟢 Tersedia' : '🔴 Habis'}
-                </button>
-              </div>
-            </div>
-            <div className="flex justify-end gap-3">
-              <button type="button" onClick={cancelEditProduct} className="px-6 py-2 font-bold text-espresso-400 hover:text-red-500 transition-colors">Batal</button>
-              <button type="submit" className="px-8 py-3 bg-coffee-900 text-white rounded-xl font-bold shadow-lg shadow-coffee-900/20 active:scale-95">
-                {editingProductId ? 'Update Menu' : 'Simpan Menu Baru'}
-              </button>
-            </div>
-          </form>
+          <ProductForm
+            product={newProduct}
+            productIcons={categoryImages}
+            isEditing={Boolean(editingProductId)}
+            onChange={setNewProduct}
+            onSubmit={handleSubmitProduct}
+            onCancel={cancelEditProduct}
+          />
         )}
       </div>
 
-      {/* Product Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredProducts.map((product) => (
-          <div key={product.id} className="bg-white rounded-[2.5rem] border border-coffee-100 p-5 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group overflow-hidden">
-            <div className="aspect-[4/3] bg-gradient-to-br from-coffee-50 to-white rounded-3xl flex items-center justify-center text-7xl mb-5 group-hover:scale-105 transition-transform duration-500">
-              {product.image}
-            </div>
-            
-            <div className="space-y-3">
-              <div className="flex items-start justify-between">
-                <div>
-                  <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-tighter text-espresso-400 mb-1">
-                    <FiTag size={10} /> {product.category}
-                  </span>
-                  <h3 className="font-bold text-coffee-900 text-lg leading-tight group-hover:text-coffee-600 transition-colors">
-                    {product.name}
-                  </h3>
-                </div>
-                <div className={`p-1 rounded-full ${product.available ? 'text-green-500' : 'text-red-400'}`}>
-                  {product.available ? <FiCheckCircle size={20} /> : <FiXCircle size={20} />}
-                </div>
-              </div>
-
-              <p className="text-xs text-espresso-500 font-medium line-clamp-2 min-h-[2.5rem]">
-                {product.description}
-              </p>
-
-              <div className="pt-4 flex items-center justify-between border-t border-coffee-50">
-                <span className="text-xl font-black text-coffee-900">{product.price}</span>
-                <div className="flex gap-2">
-                  <button onClick={() => startEditProduct(product)} className="p-3 bg-coffee-50 text-coffee-900 rounded-2xl hover:bg-coffee-900 hover:text-white transition-all">
-                    <FiEdit size={16} />
-                  </button>
-                  <button onClick={() => removeProduct(product.id)} className="p-3 bg-red-50 text-red-500 rounded-2xl hover:bg-red-500 hover:text-white transition-all">
-                    <FiTrash2 size={16} />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <ProductCard
+            key={product.id}
+            product={product}
+            onEdit={startEditProduct}
+            onRemove={removeProduct}
+          />
         ))}
       </div>
 
       {filteredProducts.length === 0 && (
-        <div className="text-center py-24 bg-white rounded-[3rem] border border-dashed border-coffee-200">
-          <div className="text-7xl mb-4 grayscale opacity-20">☕</div>
-          <h3 className="text-xl font-bold text-coffee-900">Menu tidak ditemukan</h3>
-          <p className="text-espresso-400">Coba cari dengan kata kunci lain.</p>
-        </div>
+        <EmptyState
+          icon="Menu"
+          title="Menu tidak ditemukan"
+          description="Coba cari dengan kata kunci lain."
+          className="py-24 rounded-[3rem]"
+        />
       )}
     </div>
   );

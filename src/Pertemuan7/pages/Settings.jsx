@@ -1,23 +1,25 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import PageHeader from '../components/PageHeader';
-import { FiSave, FiUser, FiLock, FiBell, FiPrinter, FiCamera } from 'react-icons/fi';
+import { FiSave, FiUser, FiLock, FiPrinter, FiCamera } from 'react-icons/fi';
+
+const defaultUser = { name: 'Dipa Tranggana', role: 'Owner', avatar: 'DT' };
 
 export default function Settings() {
   // Ambil data user dengan proteksi agar tidak crash jika localStorage kosong
   const [user, setUser] = useState(() => {
     try {
       const savedUser = localStorage.getItem('user');
-      return savedUser ? JSON.parse(savedUser) : { name: 'Admin BrewMaster', avatar: 'A' };
-    } catch (e) {
-      return { name: 'Admin BrewMaster', avatar: 'A' };
+      return savedUser ? { ...defaultUser, ...JSON.parse(savedUser) } : defaultUser;
+    } catch {
+      return defaultUser;
     }
   });
 
   const [settings, setSettings] = useState({
-    storeName: 'BrewMaster Coffee',
+    storeName: 'Format Ganjil Coffee',
     address: 'Jl. Kopi No. 45, Jakarta',
     phone: '+62 812-3456-7890',
-    email: 'hello@brewmaster.com',
+    email: 'hello@formatganjil.com',
     taxRate: 11,
     currency: 'IDR',
     notifications: {
@@ -64,6 +66,7 @@ export default function Settings() {
 
   const handleSaveProfile = () => {
     localStorage.setItem('user', JSON.stringify(user));
+    window.dispatchEvent(new Event('profile-updated'));
     alert('Profil admin berhasil diperbarui!');
   };
 
@@ -81,6 +84,27 @@ export default function Settings() {
           <div className="flex items-center mb-6">
             <FiCamera className="w-5 h-5 text-coffee-900 mr-3" />
             <h3 className="text-lg font-black text-coffee-900">Foto Profil Admin</h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div>
+              <label className="block text-[10px] font-black uppercase text-espresso-400 mb-2 ml-1">Nama Admin</label>
+              <input
+                type="text"
+                value={user.name}
+                onChange={(event) => setUser((prev) => ({ ...prev, name: event.target.value }))}
+                className="w-full px-5 py-4 bg-coffee-50 border-none rounded-2xl focus:ring-2 focus:ring-coffee-200 outline-none font-bold text-coffee-900"
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] font-black uppercase text-espresso-400 mb-2 ml-1">Role</label>
+              <input
+                type="text"
+                value={user.role}
+                onChange={(event) => setUser((prev) => ({ ...prev, role: event.target.value }))}
+                className="w-full px-5 py-4 bg-coffee-50 border-none rounded-2xl focus:ring-2 focus:ring-coffee-200 outline-none font-bold text-coffee-900"
+              />
+            </div>
           </div>
 
           <div className="flex flex-col md:flex-row items-center gap-8">
