@@ -15,7 +15,7 @@ export default function CustomerCard({ customer, photoUrl }) {
           className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-md"
         />
         <div>
-          <Link to={`/customers/${customer.id}`} className="font-bold text-coffee-900 hover:underline">
+          <Link to={`/dashboard/customers/${customer.id}`} className="font-bold text-coffee-900 hover:underline">
             {customer.name}
           </Link>
           <LoyaltyBadge loyalty={customer.loyalty} />

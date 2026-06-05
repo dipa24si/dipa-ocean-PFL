@@ -10,7 +10,7 @@ export default function AuthLayout({ children }) {
       <div className="absolute top-6 left-6">
         <div className="flex items-center space-x-2">
           <span className="text-2xl">☕</span>
-          <span className="text-2xl font-bold font-display text-coffee-900">NgopiEuy</span>
+          <span className="text-2xl font-bold font-display text-coffee-900">Format Ganjil</span>
         </div>
       </div>
 

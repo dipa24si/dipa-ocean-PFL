@@ -1,15 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import StatCard from '../components/StatCard';
 import RecentOrders from '../components/RecentOrders';
 import InventoryAlerts from '../components/InventoryAlerts';
 import SalesTrendChart from '../components/SalesTrendChart';
 import PageHeader from '../components/PageHeader';
+import ServiceAutomation, { AutomationLogger } from '../components/ServiceAutomation';
 
 /**
- * Dashboard Page Component
- * Halaman utama yang sudah disesuaikan dengan tema Format Ganjil (Coffee)
+ * Dashboard Page Component - PERTEMUAN 12 IMPLEMENTATION
+ * Halaman utama dengan Service Automation integration
+ * HOOKS YANG DIGUNAKAN:
+ * - useState: Dashboard stats, automation status
+ * - useEffect: Fetch data, monitor automation
  */
 export default function Dashboard() {
+  // useState untuk dashboard state
+  const [stats, setStats] = useState({
+    totalSales: 'Rp 1.240.000',
+    completedOrders: 158,
+    topProduct: 'Iced Latte',
+    activeStaff: 5
+  });
+
+  const [automationRunning, setAutomationRunning] = useState(false);
+
+  // useEffect untuk simulasi data update
+  useEffect(() => {
+    console.log('[Dashboard.jsx] Component mounted - useEffect triggered');
+
+    // Simulasi fetch data dari API
+    const fetchDashboardData = async () => {
+      // API call simulation
+      console.log('[Dashboard.jsx] Fetching dashboard data...');
+    };
+
+    fetchDashboardData();
+
+    return () => {
+      console.log('[Dashboard.jsx] Component will unmount');
+    };
+  }, []);
+
+  // useEffect untuk monitoring automation
+  useEffect(() => {
+    console.log('[Dashboard.jsx] Automation status:', automationRunning ? 'Running' : 'Idle');
+  }, [automationRunning]);
+
   return (
     <>
       {/* Header Halaman */}
@@ -22,28 +58,28 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatCard
           title="Total Penjualan"
-          value="Rp 1.240.000"
+          value={stats.totalSales}
           change="+8.2%"
           icon="💰"
           changeType="positive"
         />
         <StatCard
           title="Pesanan Selesai"
-          value="158"
+          value={stats.completedOrders}
           change="+12"
           icon="✅"
           changeType="positive"
         />
         <StatCard
           title="Menu Terlaris"
-          value="Iced Latte"
+          value={stats.topProduct}
           change="Hot"
           icon="☕"
           changeType="positive"
         />
         <StatCard
           title="Staf Aktif"
-          value="5"
+          value={stats.activeStaff}
           change="On Shift"
           icon="👥"
           changeType="positive"
@@ -63,8 +99,16 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Service Automation Widget */}
+      <div className="mb-8">
+        <ServiceAutomation />
+      </div>
+
       {/* Tabel Pesanan Terbaru */}
       <RecentOrders />
+
+      {/* Automation Logger */}
+      <AutomationLogger />
 
       {/* AI Insights Section - Desain Format Ganjil */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -108,7 +152,7 @@ export default function Dashboard() {
             <button className="text-xs font-bold text-orange-400 hover:text-orange-300 transition-colors uppercase tracking-widest">
               Terapkan Promo →
             </button>
-            <span className="text-[10px] text-white/30 italic">AI Generated Insight</span>
+            <span className="text-[10px] text-white/30 italic">Service Automation</span>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Table,
@@ -51,6 +51,10 @@ export default function CustomersTable({ customers }) {
     membershipLevel: 'Bronze',
     city: '',
   });
+
+  useEffect(() => {
+    setCustomerRows(customers);
+  }, [customers]);
 
   const uniqueCities = ['all', ...new Set(customerRows.map((customer) => customer.city).filter(Boolean))];
   const uniqueMemberships = [
@@ -221,43 +225,41 @@ export default function CustomersTable({ customers }) {
           </span>
         </div>
 
-        <Table>
+        <Table className="table-fixed">
           <TableHeader>
             <TableRow className="bg-gray-50 hover:bg-gray-50">
-              <TableHead className="text-xs font-bold text-gray-700 uppercase">Nama</TableHead>
-              <TableHead className="text-xs font-bold text-gray-700 uppercase">Username</TableHead>
-              <TableHead className="text-xs font-bold text-gray-700 uppercase">Email</TableHead>
-              <TableHead className="text-xs font-bold text-gray-700 uppercase">Kota</TableHead>
-              <TableHead className="text-xs font-bold text-gray-700 uppercase">Membership</TableHead>
-              <TableHead className="text-xs font-bold text-gray-700 uppercase text-right">Pesanan</TableHead>
-              <TableHead className="text-xs font-bold text-gray-700 uppercase text-right">Total Belanja</TableHead>
-              <TableHead className="text-xs font-bold text-gray-700 uppercase">Joined</TableHead>
-              <TableHead className="text-xs font-bold text-gray-700 uppercase">Status</TableHead>
-              <TableHead className="text-xs font-bold text-gray-700 uppercase text-center">Aksi</TableHead>
+              <TableHead className="w-[17%] text-xs font-bold text-gray-700 uppercase">Nama</TableHead>
+              <TableHead className="w-[13%] text-xs font-bold text-gray-700 uppercase">Username</TableHead>
+              <TableHead className="w-[20%] text-xs font-bold text-gray-700 uppercase">Email</TableHead>
+              <TableHead className="w-[10%] text-xs font-bold text-gray-700 uppercase">Kota</TableHead>
+              <TableHead className="w-[10%] text-xs font-bold text-gray-700 uppercase">Membership</TableHead>
+              <TableHead className="w-[7%] text-xs font-bold text-gray-700 uppercase text-right">Pesanan</TableHead>
+              <TableHead className="w-[11%] text-xs font-bold text-gray-700 uppercase text-right">Total</TableHead>
+              <TableHead className="w-[8%] text-xs font-bold text-gray-700 uppercase">Status</TableHead>
+              <TableHead className="w-[4%] text-xs font-bold text-gray-700 uppercase text-center">Aksi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {sortedCustomers.map((customer) => (
               <TableRow key={customer.id} className="hover:bg-gray-50">
                 <TableCell className="font-medium">
-                  <Link to={`/customers/${customer.id}`} className="flex items-center gap-2 group">
-                    <span className="text-lg">{customer.avatar}</span>
-                    <span className="text-blue-600 font-semibold group-hover:underline underline-offset-4">
+                  <Link to={`/dashboard/customers/${customer.id}`} className="flex min-w-0 items-center gap-2 group">
+                    <span className="text-lg shrink-0">{customer.avatar}</span>
+                    <span className="truncate text-blue-600 font-semibold group-hover:underline underline-offset-4">
                       {customer.name}
                     </span>
                   </Link>
                 </TableCell>
-                <TableCell className="text-sm text-gray-600">{customer.username}</TableCell>
-                <TableCell className="text-sm text-gray-600">{customer.email}</TableCell>
-                <TableCell className="text-sm text-gray-600">{customer.city}</TableCell>
+                <TableCell className="truncate text-sm text-gray-600" title={customer.username}>{customer.username}</TableCell>
+                <TableCell className="truncate text-sm text-gray-600" title={customer.email}>{customer.email}</TableCell>
+                <TableCell className="truncate text-sm text-gray-600" title={customer.city}>{customer.city}</TableCell>
                 <TableCell>
                   <span className={`inline-block px-2 py-1 rounded text-xs font-semibold ${getMembershipClass(customer.membershipLevel)}`}>
                     {customer.membershipLevel}
                   </span>
                 </TableCell>
                 <TableCell className="text-right font-semibold">{customer.totalOrders}</TableCell>
-                <TableCell className="text-right font-semibold text-green-600">{customer.totalSpent}</TableCell>
-                <TableCell className="text-sm text-gray-600">{customer.joinDate}</TableCell>
+                <TableCell className="truncate text-right font-semibold text-green-600" title={customer.totalSpent}>{customer.totalSpent}</TableCell>
                 <TableCell>
                   <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStatusClass(customer.status)}`}>
                     {getStatusLabel(customer.status)}

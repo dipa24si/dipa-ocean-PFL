@@ -14,13 +14,13 @@ export default function Sidebar() {
   const navigate = useNavigate();
 
   const menuItems = [
-    { name: 'Dashboard', icon: <FiLayout />, path: '/dashboard' },
-    { name: 'Orders', icon: <FiShoppingCart />, path: '/orders' },
-    { name: 'Menu', icon: <FiMenu />, path: '/products' },
-    { name: 'Customers', icon: <FiUsers />, path: '/customers' },
-    { name: 'Inventory', icon: <FiPackage />, path: '/inventory' },
-    { name: 'Staff', icon: <FiUser />, path: '/staff' },
-    { name: 'Settings', icon: <FiSettings />, path: '/settings' },
+    { name: 'Dashboard', icon: <FiLayout />, path: '/dashboard/dashboard' },
+    { name: 'Orders', icon: <FiShoppingCart />, path: '/dashboard/orders' },
+    { name: 'Menu', icon: <FiMenu />, path: '/dashboard/products' },
+    { name: 'Customers', icon: <FiUsers />, path: '/dashboard/customers' },
+    { name: 'Inventory', icon: <FiPackage />, path: '/dashboard/inventory' },
+    { name: 'Staff', icon: <FiUser />, path: '/dashboard/staff' },
+    { name: 'Settings', icon: <FiSettings />, path: '/dashboard/settings' },
   ];
 
   // Fungsi Logout

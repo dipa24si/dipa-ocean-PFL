@@ -104,8 +104,8 @@ export default function ErrorPage({ errorCode = 404, errorDescription = "Halaman
         <div className="pt-6 border-t border-espresso-200">
           <p className="text-sm text-espresso-500">
             Jika masalah berlanjut, hubungi tim support kami di{" "}
-            <a href="mailto:support@ngopieuy.com" className="text-coffee-600 hover:underline">
-              support@ngopieuy.com
+            <a href="mailto:support@FormatGanjil.com" className="text-coffee-600 hover:underline">
+              support@FormatGanjil.com
             </a>
           </p>
         </div>

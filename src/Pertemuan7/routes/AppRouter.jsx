@@ -4,6 +4,7 @@ import ProtectedRoute from './ProtectedRoute';
 import MainLayout from '../layouts/MainLayout';
 import NotFound from '../pages/NotFound';
 import LoginV2 from '../pages/LoginV2';
+import GuestHome from '../pages/GuestHome';
 import ErrorPage from '../components/ErrorPage';
 
 // Lazy load pages
@@ -41,24 +42,33 @@ function PageLoadingSpinner() {
   );
 }
 
+function PublicEntry() {
+  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  return <Navigate to={isLoggedIn ? '/dashboard' : '/login'} replace />;
+}
+
 export default function AppRouter() {
   return (
     <Suspense fallback={<PageLoadingSpinner />}>
       <Routes>
-        {/* --- PUBLIC ROUTES --- */}
+        {/* --- PUBLIC ROUTES (Guest) --- */}
+        {/* Landing Page - Tampilan Guest dengan Promo */}
+        <Route path="/home" element={<GuestHome />} />
+        <Route index element={<PublicEntry />} />
+        
         <Route path="/login" element={<LoginV2 />} />
         <Route path="/login-old" element={<Login />} />
 
         {/* --- PROTECTED ROUTES (Hanya bisa diakses setelah login) --- */}
         <Route
-          path="/"
+          path="/dashboard-app"
           element={
             <ProtectedRoute>
               <MainLayout />
             </ProtectedRoute>
           }
         >
-          {/* Otomatis arahkan ke dashboard jika akses path "/" */}
+          {/* Otomatis arahkan ke dashboard jika akses path "/dashboard-app" */}
           <Route index element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />
           
@@ -73,12 +83,31 @@ export default function AppRouter() {
           <Route path="settings" element={<Settings />} />
         </Route>
 
+        {/* Protected route untuk dashboard dengan path yang lebih singkat */}
+        <Route
+          path="/dashboard/*"
+          element={
+            <ProtectedRoute>
+              <MainLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Dashboard />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="inventory" element={<Inventory />} />
+          <Route path="products" element={<Products />} />
+          <Route path="customers/:id" element={<CustomerDetail />} />
+          <Route path="customers" element={<Customers />} />
+          <Route path="staff" element={<Staff />} />
+          <Route path="analytics" element={<Analytics />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
+
         {/* --- ERROR & 404 HANDLER --- */}
-        <Route path="/error/400" element={<ErrorPage errorCode={400} errorImage="❌" />} />
-        <Route path="/error/401" element={<ErrorPage errorCode={401} errorImage="🔒" />} />
-        <Route path="/error/403" element={<ErrorPage errorCode={403} errorImage="🚫" />} />
-        
-        {/* Jika URL tidak terdaftar, tampilkan NotFound */}
+        <Route path="/error/400" element={<ErrorPage errorCode={400} errorImage="error" />} />
+        <Route path="/error/401" element={<ErrorPage errorCode={401} errorImage="lock" />} />
+        <Route path="/error/403" element={<ErrorPage errorCode={403} errorImage="forbidden" />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>

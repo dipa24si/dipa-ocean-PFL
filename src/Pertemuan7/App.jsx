@@ -3,7 +3,7 @@ import AppRouter from './routes/AppRouter';
 import './custom.css';
 
 /**
- * NgopiEuy Main App Component
+ * Format Ganjil Main App Component
  * 
  * FITUR YANG DIIMPLEMENTASIKAN:
  * 1. ✅ React Router - BrowserRouter + Routes untuk navigation

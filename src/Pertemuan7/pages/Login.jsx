@@ -36,7 +36,7 @@ export default function Login() {
       {/* Header */}
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          Selamat datang di NgopiEuy
+          Selamat datang di Format Ganjil
         </h2>
         <p className="text-gray-600 text-sm">
           Masuk ke dashboard kafe Anda

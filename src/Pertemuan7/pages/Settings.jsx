@@ -19,7 +19,7 @@ export default function Settings() {
     storeName: 'Format Ganjil Coffee',
     address: 'Jl. Kopi No. 45, Jakarta',
     phone: '+62 812-3456-7890',
-    email: 'hello@formatganjil.com',
+    email: 'hello@FormatGanjil.com',
     taxRate: 11,
     currency: 'IDR',
     notifications: {

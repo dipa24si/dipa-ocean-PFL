@@ -65,7 +65,7 @@ const generateProducts = () => {
   });
 };
 
-export default function ProductsTable() {
+export default function ProductsTable({ searchTerm = '', selectedCategory = 'all' }) {
   const [sortBy, setSortBy] = useState('name');
   const [filterCategory, setFilterCategory] = useState('all');
   const [products, setProducts] = useState(() => generateProducts());
@@ -83,10 +83,28 @@ export default function ProductsTable() {
 
   const categories = ['all', ...new Set(products.map(p => p.category))];
 
-  // Filter berdasarkan kategori
+  const matchesTopCategory = (product) => {
+    const categoryMap = {
+      coffee: 'Coffee',
+      dessert: 'Dessert',
+      cold: 'Cold Drinks',
+    };
+
+    if (selectedCategory === 'all') return true;
+    return product.category === categoryMap[selectedCategory];
+  };
+
+  // Filter berdasarkan search, kategori halaman, dan kategori tabel
   const filteredProducts = products.filter((product) => {
-    if (filterCategory === 'all') return true;
-    return product.category === filterCategory;
+    const keyword = searchTerm.toLowerCase().trim();
+    const matchesSearch =
+      keyword === '' ||
+      product.name.toLowerCase().includes(keyword) ||
+      product.description.toLowerCase().includes(keyword) ||
+      product.category.toLowerCase().includes(keyword);
+    const matchesTableCategory = filterCategory === 'all' || product.category === filterCategory;
+
+    return matchesSearch && matchesTopCategory(product) && matchesTableCategory;
   });
 
   // Sort data

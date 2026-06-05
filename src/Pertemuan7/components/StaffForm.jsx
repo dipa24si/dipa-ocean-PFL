@@ -36,7 +36,7 @@ export default function StaffForm({
         </div>
         <div className="space-y-2">
           <label className="text-xs font-bold uppercase tracking-widest text-espresso-400 ml-1">Email Staf</label>
-          <input type="email" value={staffMember.email} onChange={(event) => updateStaff('email', event.target.value)} className="w-full px-4 py-3 bg-coffee-50 rounded-xl outline-none" placeholder="staf@ngopieuy.com" />
+          <input type="email" value={staffMember.email} onChange={(event) => updateStaff('email', event.target.value)} className="w-full px-4 py-3 bg-coffee-50 rounded-xl outline-none" placeholder="staf@FormatGanjil.com" />
         </div>
         <div className="space-y-2">
           <label className="text-xs font-bold uppercase tracking-widest text-espresso-400 ml-1">No. WhatsApp</label>

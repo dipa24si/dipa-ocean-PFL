@@ -67,9 +67,8 @@ const generateOrders = (totalOrders) => {
   });
 };
 
-export default function OrdersTable({ totalOrders = 20 }) {
+export default function OrdersTable({ totalOrders = 20, searchTerm = '', filterStatus = 'all' }) {
   const [sortBy, setSortBy] = useState('date');
-  const [filterStatus, setFilterStatus] = useState('all');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -81,10 +80,16 @@ export default function OrdersTable({ totalOrders = 20 }) {
 
   const orders = generateOrders(totalOrders);
 
-  // Filter berdasarkan status
+  // Filter berdasarkan search term dan status
   const filteredOrders = orders.filter((order) => {
-    if (filterStatus === 'all') return true;
-    return order.status === filterStatus;
+    const matchesSearch = searchTerm === '' || 
+      order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.items.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesStatus = filterStatus === 'all' || order.status === filterStatus;
+    
+    return matchesSearch && matchesStatus;
   });
 
   // Sort data
@@ -150,31 +155,6 @@ export default function OrdersTable({ totalOrders = 20 }) {
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setSortBy('customer')}>
                 Nama Pelanggan (A-Z)
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                🔍 Filter: {filterStatus === 'all' ? 'Semua' : filterStatus}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-              <DropdownMenuItem onClick={() => setFilterStatus('all')}>
-                Semua Status
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setFilterStatus('Completed')}>
-                ✓ Selesai
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setFilterStatus('Processing')}>
-                ⏳ Diproses
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setFilterStatus('Pending')}>
-                ⏸ Menunggu
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setFilterStatus('Cancelled')}>
-                ✗ Dibatalkan
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

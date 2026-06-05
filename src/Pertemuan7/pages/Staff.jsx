@@ -33,7 +33,7 @@ const generateInitialStaff = () => {
       id: index + 1,
       name,
       position,
-      email: `${name.toLowerCase().replace(/\s+/g, '.')}@ngopieuy.com`,
+      email: `${name.toLowerCase().replace(/\s+/g, '.')}@FormatGanjil.com`,
       phone: `+62 8${String(110000000 + index * 20000).slice(-10)}`,
       shift: shifts[index % shifts.length],
       joinDate: `2023-${String(joinMonth).padStart(2, '0')}-${String(joinDay).padStart(2, '0')}`,

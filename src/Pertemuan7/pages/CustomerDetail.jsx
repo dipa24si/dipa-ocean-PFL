@@ -13,7 +13,7 @@ export default function CustomerDetail() {
         <PageHeader title="Pelanggan Tidak Ditemukan" breadcrumb="Customers" />
         <div className="bg-white rounded-[2rem] border border-gray-200 p-8 shadow-sm">
           <p className="text-gray-600 mb-6">Data pelanggan yang dipilih tidak tersedia.</p>
-          <Link to="/customers" className="font-bold text-blue-600 underline underline-offset-4">
+          <Link to="/dashboard/customers" className="font-bold text-blue-600 underline underline-offset-4">
             Kembali ke Customers
           </Link>
         </div>
@@ -177,7 +177,7 @@ export default function CustomerDetail() {
         {/* Footer */}
         <div className="px-8 py-6 border-t border-gray-200 bg-gray-50">
           <Link
-            to="/customers"
+            to="/dashboard/customers"
             className="inline-flex items-center gap-2 px-5 py-3 bg-gray-900 text-white rounded-lg font-bold hover:bg-black transition-all"
           >
             <FiArrowLeft /> Kembali
