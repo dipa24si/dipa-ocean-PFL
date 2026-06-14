@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { UserPlus } from 'lucide-react';
+import { UserPlus, ArrowLeft } from 'lucide-react';
 import { registerWithSupabase } from '../services/supabaseApi';
 
 export default function Register() {
@@ -57,89 +57,163 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDF8F5] flex items-center justify-center p-4">
-      <div className="max-w-lg w-full bg-white rounded-[2rem] shadow-xl border border-[#D4A574]/25 p-8">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl bg-[#8B6F47] text-white flex items-center justify-center mx-auto mb-4">
-            <UserPlus size={30} />
-          </div>
-          <h1 className="text-2xl font-black text-[#3E2C1C]">Daftar Member</h1>
-          <p className="text-sm text-[#78675C] mt-2">Buat akun agar bisa melihat promo dan mengirim feedback.</p>
+    <div className="min-h-screen bg-[#F4F1EA] text-[#0F0E0C] font-sans antialiased flex flex-col justify-between relative overflow-hidden selection:bg-[#A88C74] selection:text-white">
+      
+      {/* Seni Dekoratif Latar Belakang (Soft Blob Blur) */}
+      <div className="absolute -top-40 -left-40 w-96 h-96 bg-[#A88C74]/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-[#0F0E0C]/5 rounded-full blur-3xl pointer-events-none"></div>
+
+      {/* Header Navigasi Atas */}
+      <header className="max-w-7xl w-full mx-auto px-6 py-6 flex justify-between items-center relative z-10">
+        <button 
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] uppercase text-[#0F0E0C]/60 hover:text-[#0F0E0C] transition-colors group"
+        >
+          <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-1" />
+          Kembali
+        </button>
+        <div className="text-right cursor-pointer" onClick={() => navigate('/')}>
+          <p className="text-[8px] font-bold tracking-[0.3em] uppercase text-[#A88C74]">ATELIER OF COFFEE</p>
+          <h1 className="text-sm font-bold tracking-widest text-[#0F0E0C]">FORMAT GANJIL</h1>
         </div>
+      </header>
 
-        {error && <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-700 text-sm font-bold">{error}</div>}
-        {message && <div className="mb-4 p-3 rounded-xl bg-green-50 text-green-700 text-sm font-bold">{message}</div>}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-[10px] font-black uppercase tracking-[0.18em] text-[#78675C] mb-2">Nama</label>
-            <input
-              value={form.name}
-              onChange={(event) => updateField('name', event.target.value)}
-              className="w-full px-5 py-4 bg-[#FDF8F5] rounded-2xl border border-[#D4A574]/20 outline-none focus:ring-2 focus:ring-[#8B6F47]"
-              placeholder="Nama lengkap"
-            />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-[10px] font-black uppercase tracking-[0.18em] text-[#78675C] mb-2">Email</label>
-              <input
-                type="email"
-                value={form.email}
-                onChange={(event) => updateField('email', event.target.value)}
-                className="w-full px-5 py-4 bg-[#FDF8F5] rounded-2xl border border-[#D4A574]/20 outline-none focus:ring-2 focus:ring-[#8B6F47]"
-                placeholder="nama@email.com"
-              />
+      {/* Container Utama Form Register */}
+      <main className="flex-1 flex items-center justify-center px-6 relative z-10 my-8">
+        <div className="w-full max-w-lg bg-white border border-[#A88C74]/15 rounded-[2.5rem] p-8 md:p-10 shadow-2xl shadow-black/[0.03] transition-all hover:shadow-black/[0.05]">
+          
+          {/* Identitas Pendaftaran / Header Card */}
+          <div className="flex flex-col items-center text-center mb-8">
+            <div className="w-14 h-14 rounded-2xl bg-[#0F0E0C] flex items-center justify-center mb-4 shadow-xl shadow-black/10 text-[#EAD3B3]">
+              <UserPlus size={22} />
             </div>
-            <div>
-              <label className="block text-[10px] font-black uppercase tracking-[0.18em] text-[#78675C] mb-2">No. HP</label>
-              <input
-                value={form.phone}
-                onChange={(event) => updateField('phone', event.target.value)}
-                className="w-full px-5 py-4 bg-[#FDF8F5] rounded-2xl border border-[#D4A574]/20 outline-none focus:ring-2 focus:ring-[#8B6F47]"
-                placeholder="08?"
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-[10px] font-black uppercase tracking-[0.18em] text-[#78675C] mb-2">Password</label>
-              <input
-                type="password"
-                value={form.password}
-                onChange={(event) => updateField('password', event.target.value)}
-                className="w-full px-5 py-4 bg-[#FDF8F5] rounded-2xl border border-[#D4A574]/20 outline-none focus:ring-2 focus:ring-[#8B6F47]"
-                placeholder="Minimal 6 karakter"
-              />
-            </div>
-            <div>
-              <label className="block text-[10px] font-black uppercase tracking-[0.18em] text-[#78675C] mb-2">Konfirmasi</label>
-              <input
-                type="password"
-                value={form.confirmPassword}
-                onChange={(event) => updateField('confirmPassword', event.target.value)}
-                className="w-full px-5 py-4 bg-[#FDF8F5] rounded-2xl border border-[#D4A574]/20 outline-none focus:ring-2 focus:ring-[#8B6F47]"
-                placeholder="Ulangi password"
-              />
-            </div>
+            <p className="text-[9px] font-bold tracking-[0.4em] uppercase text-[#A88C74] mb-1">ENROLLMENT INTERFACE</p>
+            <h2 className="text-2xl font-bold tracking-wider text-[#0F0E0C] font-display uppercase">DAFTAR MEMBER</h2>
+            <p className="text-xs text-[#0F0E0C]/50 font-light mt-1.5">Bergabung dengan ekosistem digital ganjil</p>
           </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full py-4 bg-[#3E2C1C] text-white rounded-2xl font-black uppercase tracking-widest hover:bg-black disabled:opacity-70"
-          >
-            {isLoading ? 'Mendaftarkan...' : 'Daftar'}
-          </button>
-        </form>
+          {/* Notifikasi Responsif */}
+          {error && (
+            <div className="mb-5 p-3.5 rounded-xl bg-red-50 border border-red-100 text-red-800 text-xs font-medium tracking-wide">
+              {error}
+            </div>
+          )}
+          {message && (
+            <div className="mb-5 p-3.5 rounded-xl bg-green-50 border border-green-100 text-green-800 text-xs font-medium tracking-wide">
+              {message}
+            </div>
+          )}
 
-        <p className="text-center text-sm text-[#78675C] mt-6">
-          Sudah punya akun?{' '}
-          <Link to="/login" className="font-black text-[#3E2C1C] hover:underline">
-            Login
-          </Link>
-        </p>
-      </div>
+          {/* Form Fields */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            
+            {/* Input Nama Lengkap */}
+            <div className="space-y-1.5">
+              <label className="text-[9px] font-bold uppercase tracking-widest text-[#0F0E0C]/60 block pl-1">
+                Identitas Nama
+              </label>
+              <input
+                type="text"
+                value={form.name}
+                onChange={(event) => updateField('name', event.target.value)}
+                placeholder="Nama lengkap Anda"
+                disabled={isLoading}
+                className="w-full bg-[#F4F1EA]/40 border border-[#A88C74]/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0F0E0C] focus:bg-white transition-all placeholder:text-[#0F0E0C]/20 text-[#0F0E0C]"
+              />
+            </div>
+
+            {/* Baris Grid 1: Email & No HP */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-[9px] font-bold uppercase tracking-widest text-[#0F0E0C]/60 block pl-1">
+                  Alamat Korespondensi
+                </label>
+                <input
+                  type="email"
+                  value={form.email}
+                  onChange={(event) => updateField('email', event.target.value)}
+                  placeholder="nama@email.com"
+                  disabled={isLoading}
+                  className="w-full bg-[#F4F1EA]/40 border border-[#A88C74]/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0F0E0C] focus:bg-white transition-all placeholder:text-[#0F0E0C]/20 text-[#0F0E0C]"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[9px] font-bold uppercase tracking-widest text-[#0F0E0C]/60 block pl-1">
+                  Kontak (No. HP)
+                </label>
+                <input
+                  type="text"
+                  value={form.phone}
+                  onChange={(event) => updateField('phone', event.target.value)}
+                  placeholder="0812xxxxxxxx"
+                  disabled={isLoading}
+                  className="w-full bg-[#F4F1EA]/40 border border-[#A88C74]/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0F0E0C] focus:bg-white transition-all placeholder:text-[#0F0E0C]/20 text-[#0F0E0C]"
+                />
+              </div>
+            </div>
+
+            {/* Baris Grid 2: Password & Konfirmasi */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-[9px] font-bold uppercase tracking-widest text-[#0F0E0C]/60 block pl-1">
+                  Kunci Sandi
+                </label>
+                <input
+                  type="password"
+                  value={form.password}
+                  onChange={(event) => updateField('password', event.target.value)}
+                  placeholder="Minimal 6 karakter"
+                  disabled={isLoading}
+                  className="w-full bg-[#F4F1EA]/40 border border-[#A88C74]/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0F0E0C] focus:bg-white transition-all placeholder:text-[#0F0E0C]/20 text-[#0F0E0C]"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[9px] font-bold uppercase tracking-widest text-[#0F0E0C]/60 block pl-1">
+                  Konfirmasi Sandi
+                </label>
+                <input
+                  type="password"
+                  value={form.confirmPassword}
+                  onChange={(event) => updateField('confirmPassword', event.target.value)}
+                  placeholder="Ulangi sandi"
+                  disabled={isLoading}
+                  className="w-full bg-[#F4F1EA]/40 border border-[#A88C74]/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0F0E0C] focus:bg-white transition-all placeholder:text-[#0F0E0C]/20 text-[#0F0E0C]"
+                />
+              </div>
+            </div>
+
+            {/* Tombol Eksekusi Submit */}
+            <div className="pt-3">
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-[#0F0E0C] hover:bg-[#A88C74] text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-xl shadow-black/5 flex items-center justify-center gap-3 text-xs tracking-[0.2em] uppercase active:scale-[0.99] disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                <span>{isLoading ? 'Memproses Enkripsi...' : 'Daftarkan Akun'}</span>
+              </button>
+            </div>
+          </form>
+
+          {/* Pengalih Balik ke Login */}
+          <div className="mt-8 pt-6 border-t border-[#A88C74]/10 text-center">
+            <p className="text-xs text-[#0F0E0C]/50 font-light">
+              Sudah memiliki akun terdaftar?{' '}
+              <Link 
+                to="/login" 
+                className="text-[#A88C74] font-bold hover:underline tracking-wide uppercase text-[11px] ml-1"
+              >
+                Masuk Sesi (Login)
+              </Link>
+            </p>
+          </div>
+
+        </div>
+      </main>
+
+      {/* Footer Legal Mikro */}
+      <footer className="text-center py-6 text-[9px] tracking-[0.2em] uppercase text-[#0F0E0C]/30 relative z-10">
+        &copy; 2026 Format Ganjil Architecture of Coffee.
+      </footer>
     </div>
   );
 }

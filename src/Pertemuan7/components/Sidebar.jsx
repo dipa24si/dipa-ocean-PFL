@@ -44,7 +44,7 @@ export default function Sidebar() {
         </div>
         <div>
           <h1 className="font-bold text-coffee-900 leading-none">Format Ganjil</h1>
-          <p className="text-[10px] font-bold text-espresso-400 mt-1 uppercase tracking-widest">Admin Panel</p>
+          <p className="text-[10px] font-bold text-espresso-400 mt-1 uppercase tracking-widest">Owner & Admin Panel</p>
         </div>
       </div>
 
