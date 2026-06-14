@@ -40,7 +40,7 @@ export default function StaffForm({
         </div>
         <div className="space-y-2">
           <label className="text-xs font-bold uppercase tracking-widest text-espresso-400 ml-1">No. WhatsApp</label>
-          <input type="tel" value={staffMember.phone} onChange={(event) => updateStaff('phone', event.target.value)} className="w-full px-4 py-3 bg-coffee-50 rounded-xl outline-none" placeholder="+62..." />
+          <input type="tel" value={staffMember.phone} onChange={(event) => updateStaff('phone', event.target.value)} className="w-full px-4 py-3 bg-coffee-50 rounded-xl outline-none" placeholder="08?..." />
         </div>
         <div className="space-y-2">
           <label className="text-xs font-bold uppercase tracking-widest text-espresso-400 ml-1">Gaji Bulanan</label>

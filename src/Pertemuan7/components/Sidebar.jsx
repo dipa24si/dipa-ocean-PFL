@@ -7,8 +7,10 @@ import {
   FiPackage, 
   FiUser, 
   FiSettings,
-  FiLogOut // Tambahkan icon logout
+  FiLogOut,
+  FiMessageSquare
 } from 'react-icons/fi';
+import { logoutFromSupabase } from '../services/supabaseApi';
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -20,14 +22,17 @@ export default function Sidebar() {
     { name: 'Customers', icon: <FiUsers />, path: '/dashboard/customers' },
     { name: 'Inventory', icon: <FiPackage />, path: '/dashboard/inventory' },
     { name: 'Staff', icon: <FiUser />, path: '/dashboard/staff' },
+    { name: 'Users', icon: <FiUsers />, path: '/dashboard/users' },
+    { name: 'Feedback', icon: <FiMessageSquare />, path: '/dashboard/feedback-complaints' },
     { name: 'Settings', icon: <FiSettings />, path: '/dashboard/settings' },
   ];
 
-  // Fungsi Logout
-  const handleLogout = () => {
-    localStorage.removeItem('isLoggedIn'); // Hapus status login
+  const handleLogout = async () => {
+    await logoutFromSupabase();
+    localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('userEmail');
-    navigate('/login'); // Balik ke login
+    localStorage.removeItem('user');
+    navigate('/login');
   };
 
   return (

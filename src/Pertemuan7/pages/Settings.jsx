@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PageHeader from '../components/PageHeader';
 import { FiSave, FiUser, FiLock, FiPrinter, FiCamera } from 'react-icons/fi';
+import { getCurrentSession, getUserProfile, uploadAvatarAndUpdateProfile } from '../services/supabaseApi';
 
 const defaultUser = { name: 'Dipa Tranggana', role: 'Owner', avatar: 'DT' };
 
@@ -14,6 +15,11 @@ export default function Settings() {
       return defaultUser;
     }
   });
+  const [selectedAvatarFile, setSelectedAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState('');
+  const [profileMessage, setProfileMessage] = useState('');
+  const [profileError, setProfileError] = useState('');
+  const [profileSaving, setProfileSaving] = useState(false);
 
   const [settings, setSettings] = useState({
     storeName: 'Format Ganjil Coffee',
@@ -49,13 +55,49 @@ export default function Settings() {
     alert('Pengaturan toko berhasil disimpan!');
   };
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadProfile = async () => {
+      try {
+        const session = await getCurrentSession();
+        if (!session?.user?.id) return;
+
+        const profile = await getUserProfile(session.user.id);
+        if (!profile || !isMounted) return;
+
+        const nextUser = {
+          id: profile.id,
+          email: profile.email || session.user.email,
+          name: profile.name || session.user.email,
+          role: profile.role || 'member',
+          status: profile.status || 'active',
+          avatar: profile.avatar || '',
+        };
+
+        setUser((prev) => ({ ...prev, ...nextUser }));
+        localStorage.setItem('user', JSON.stringify(nextUser));
+        window.dispatchEvent(new Event('profile-updated'));
+      } catch (error) {
+        console.error('[Settings] Gagal memuat profil:', error);
+      }
+    };
+
+    loadProfile();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const handleProfilePhotoChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    setSelectedAvatarFile(file);
     const reader = new FileReader();
     reader.onloadend = () => {
-      setUser(prev => ({ ...prev, avatar: reader.result }));
+      setAvatarPreview(reader.result);
     };
     reader.readAsDataURL(file);
   };
@@ -64,11 +106,34 @@ export default function Settings() {
     return typeof value === 'string' && (value.startsWith('http') || value.startsWith('data:image'));
   };
 
-  const handleSaveProfile = () => {
-    localStorage.setItem('user', JSON.stringify(user));
-    window.dispatchEvent(new Event('profile-updated'));
-    alert('Profil admin berhasil diperbarui!');
+  const handleSaveProfile = async () => {
+    setProfileMessage('');
+    setProfileError('');
+    setProfileSaving(true);
+
+    try {
+      const updatedProfile = await uploadAvatarAndUpdateProfile({
+        file: selectedAvatarFile,
+        name: user.name,
+        role: user.role,
+        currentAvatar: user.avatar,
+      });
+
+      const nextUser = { ...user, ...updatedProfile };
+      setUser(nextUser);
+      setSelectedAvatarFile(null);
+      setAvatarPreview('');
+      localStorage.setItem('user', JSON.stringify(nextUser));
+      window.dispatchEvent(new Event('profile-updated'));
+      setProfileMessage('Profil admin berhasil diperbarui.');
+    } catch (error) {
+      setProfileError(error.message || 'Profil gagal diperbarui.');
+    } finally {
+      setProfileSaving(false);
+    }
   };
+
+  const displayedAvatar = avatarPreview || user.avatar;
 
   return (
     <div className="animate-in fade-in duration-500 pb-10">
@@ -85,6 +150,17 @@ export default function Settings() {
             <FiCamera className="w-5 h-5 text-coffee-900 mr-3" />
             <h3 className="text-lg font-black text-coffee-900">Foto Profil Admin</h3>
           </div>
+
+          {profileMessage && (
+            <div className="mb-5 p-4 rounded-2xl bg-green-50 text-green-700 text-sm font-bold">
+              {profileMessage}
+            </div>
+          )}
+          {profileError && (
+            <div className="mb-5 p-4 rounded-2xl bg-red-50 text-red-700 text-sm font-bold">
+              {profileError}
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div>
@@ -110,8 +186,8 @@ export default function Settings() {
           <div className="flex flex-col md:flex-row items-center gap-8">
             <div className="flex flex-col items-center">
               <div className="w-32 h-32 rounded-[2rem] overflow-hidden bg-coffee-900 flex items-center justify-center mb-4 shadow-lg text-white">
-                {isAvatarImage(user.avatar) ? (
-                  <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
+                {isAvatarImage(displayedAvatar) ? (
+                  <img src={displayedAvatar} alt="Profile" className="w-full h-full object-cover" />
                 ) : (
                   <span className="text-4xl font-black">{user.name?.charAt(0) || 'A'}</span>
                 )}
@@ -129,9 +205,10 @@ export default function Settings() {
               </label>
               <button
                 onClick={handleSaveProfile}
+                disabled={profileSaving}
                 className="w-full bg-coffee-900 text-white font-bold py-4 rounded-2xl hover:bg-black transition-all active:scale-95"
               >
-                Simpan Profil
+                {profileSaving ? 'Menyimpan...' : 'Simpan Profil'}
               </button>
             </div>
           </div>

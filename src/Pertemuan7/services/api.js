@@ -138,38 +138,6 @@ export const ordersAPI = {
  * Demo API Calls (untuk testing tanpa backend real)
  */
 export const demoAPI = {
-  // Simulasi login - ganti dengan real API
-  loginDemo: async (email, password) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (email === 'demo@kafe.com' && password === 'demo123') {
-          const token = 'demo_token_' + Date.now();
-          localStorage.setItem('authToken', token);
-          resolve({
-            data: {
-              user: {
-                id: 1,
-                name: 'Dipa Tranggana',
-                email: email,
-                role: 'Manager',
-                avatar: '/profile-dipa.svg'
-              },
-              token: token
-            }
-          });
-        } else {
-          reject({
-            response: {
-              data: {
-                message: 'Email atau password salah'
-              }
-            }
-          });
-        }
-      }, 1000);
-    });
-  },
-  
   // Simulasi get stats
   getStatsDemo: async () => {
     return new Promise((resolve) => {

@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 import MainLayout from '../layouts/MainLayout';
@@ -6,6 +6,7 @@ import NotFound from '../pages/NotFound';
 import LoginV2 from '../pages/LoginV2';
 import GuestHome from '../pages/GuestHome';
 import ErrorPage from '../components/ErrorPage';
+import { getCurrentSession, getUserProfile } from '../services/supabaseApi';
 
 // Lazy load pages
 const Dashboard = lazy(() => import('../pages/Dashboard'));
@@ -18,6 +19,10 @@ const Customers = lazy(() => import('../pages/Customers')); // ✅ Import Custom
 const Analytics = lazy(() => import('../pages/Analytics'));
 const Settings = lazy(() => import('../pages/Settings'));
 const Login = lazy(() => import('../pages/Login'));
+const Register = lazy(() => import('../pages/Register'));
+const MemberHome = lazy(() => import('../pages/MemberHome'));
+const UsersAdmin = lazy(() => import('../pages/UsersAdmin'));
+const FeedbackComplaints = lazy(() => import('../pages/FeedbackComplaints'));
 
 /**
  * Loading Fallback Component - Tema Format Ganjil
@@ -42,9 +47,36 @@ function PageLoadingSpinner() {
   );
 }
 
-function PublicEntry() {
-  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-  return <Navigate to={isLoggedIn ? '/dashboard' : '/login'} replace />;
+function AuthLanding() {
+  const [redirectTo, setRedirectTo] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const resolveSession = async () => {
+      try {
+        const session = await getCurrentSession();
+        if (!session?.user) {
+          if (isMounted) setRedirectTo('/login');
+          return;
+        }
+
+        const profile = await getUserProfile(session.user.id);
+        if (isMounted) setRedirectTo(profile?.role === 'member' ? '/member' : '/dashboard');
+      } catch {
+        if (isMounted) setRedirectTo('/login');
+      }
+    };
+
+    resolveSession();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  if (!redirectTo) return <PageLoadingSpinner />;
+  return <Navigate to={redirectTo} replace />;
 }
 
 export default function AppRouter() {
@@ -54,16 +86,25 @@ export default function AppRouter() {
         {/* --- PUBLIC ROUTES (Guest) --- */}
         {/* Landing Page - Tampilan Guest dengan Promo */}
         <Route path="/home" element={<GuestHome />} />
-        <Route index element={<PublicEntry />} />
+        <Route index element={<AuthLanding />} />
         
         <Route path="/login" element={<LoginV2 />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/login-old" element={<Login />} />
+        <Route
+          path="/member"
+          element={
+            <ProtectedRoute allowedRoles={['member', 'admin', 'owner', 'Manager', 'Owner']}>
+              <MemberHome />
+            </ProtectedRoute>
+          }
+        />
 
         {/* --- PROTECTED ROUTES (Hanya bisa diakses setelah login) --- */}
         <Route
           path="/dashboard-app"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['admin', 'owner', 'Manager', 'Owner']}>
               <MainLayout />
             </ProtectedRoute>
           }
@@ -79,6 +120,8 @@ export default function AppRouter() {
           <Route path="customers/:id" element={<CustomerDetail />} />
           <Route path="customers" element={<Customers />} /> {/* ✅ Rute Customers Aktif */}
           <Route path="staff" element={<Staff />} />
+          <Route path="users" element={<UsersAdmin />} />
+          <Route path="feedback-complaints" element={<FeedbackComplaints />} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="settings" element={<Settings />} />
         </Route>
@@ -87,7 +130,7 @@ export default function AppRouter() {
         <Route
           path="/dashboard/*"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['admin', 'owner', 'Manager', 'Owner']}>
               <MainLayout />
             </ProtectedRoute>
           }
@@ -100,6 +143,8 @@ export default function AppRouter() {
           <Route path="customers/:id" element={<CustomerDetail />} />
           <Route path="customers" element={<Customers />} />
           <Route path="staff" element={<Staff />} />
+          <Route path="users" element={<UsersAdmin />} />
+          <Route path="feedback-complaints" element={<FeedbackComplaints />} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="settings" element={<Settings />} />
         </Route>
