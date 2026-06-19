@@ -103,22 +103,21 @@ export default function AppRouter() {
       <Routes>
 
         {/* --- PUBLIC ROUTES (Guest) --- */}
-
         {/* Landing Page - Tampilan Guest dengan Promo */}
-
-        <Route path="/home" element={<GuestHome />} />
-
-        <Route index element={<Navigate to="/member" replace />} />
-
+        <Route index element={<GuestHome />} />
+        <Route path="/home" element={<Navigate to="/" replace />} />
        
-
         <Route path="/login" element={<LoginV2 />} />
-
         <Route path="/register" element={<Register />} />
-
         <Route path="/login-old" element={<Login />} />
-
-        <Route path="/member" element={<MemberHome />} />
+        <Route
+          path="/member"
+          element={
+            <ProtectedRoute allowedRoles={['member', 'admin', 'owner', 'Manager', 'Owner']}>
+              <MemberHome />
+            </ProtectedRoute>
+          }
+        />
 
 
 
