@@ -18,6 +18,9 @@ import GuestHomeV1 from '../../Pertemuan8/pages/GuestHomeV1';
 import GuestHomeV2 from '../../Pertemuan8/pages/GuestHomeV2';
 import CRMDashboardV3 from '../../Pertemuan8/pages/CRMDashboardV3';
 import MenuPage from '../../Pertemuan8/pages/MenuPage';
+import PRDPage1 from '../../Pertemuan8/pages/PRDPage1';
+import PRDPage2 from '../../Pertemuan8/pages/PRDPage2';
+import PRDPage3 from '../../Pertemuan8/pages/PRDPage3';
 
 
 
@@ -120,6 +123,10 @@ export default function AppRouter() {
         <Route path="/v2" element={<GuestHomeV2 />} />
         <Route path="/v3" element={<CRMDashboardV3 />} />
         <Route path="/menu" element={<MenuPage />} />
+        {/* PRD Documentation Pages */}
+        <Route path="/prd/v1" element={<PRDPage1 />} />
+        <Route path="/prd/v2" element={<PRDPage2 />} />
+        <Route path="/prd/v3" element={<PRDPage3 />} />
         <Route
           path="/member"
           element={
