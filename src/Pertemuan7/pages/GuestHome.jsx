@@ -61,7 +61,7 @@ export default function GuestHome() {
 
   return (
     <div className="bg-[#F4F1EA] text-[#0F0E0C] font-sans antialiased selection:bg-[#A88C74] selection:text-white overflow-x-hidden min-h-screen">
-      
+
       {/* Dynamic Cinematic Top Ticker Bar */}
       <div className="bg-[#0F0E0C] text-[#EAD3B3] text-[10px] font-bold tracking-[0.4em] py-3 text-center sticky top-0 z-50 border-b border-[#A88C74]/10 flex items-center justify-center gap-4 px-4">
         <span className="w-1.5 h-1.5 bg-[#C5A880] rounded-full animate-pulse"></span>
@@ -75,7 +75,7 @@ export default function GuestHome() {
           <p className="text-[9px] font-bold tracking-[0.4em] uppercase text-[#A88C74]/70 mb-0.5 transition-all duration-300 group-hover:tracking-[0.5em]">ATELIER OF COFFEE</p>
           <h1 className="text-2xl font-bold tracking-widest text-[#0F0E0C] font-display">FORMAT GANJIL</h1>
         </div>
-        
+
         <div className="hidden lg:flex items-center gap-10 text-[11px] font-bold tracking-[0.2em] uppercase text-[#0F0E0C]/60">
           <span className="cursor-default hover:text-[#0F0E0C] transition-colors">CONCEPT EXPERIENCE DECK</span>
         </div>
@@ -85,9 +85,9 @@ export default function GuestHome() {
             <p className="text-[10px] font-bold text-emerald-800 tracking-wider uppercase">Current Ambient</p>
             <p className="text-xs text-[#0F0E0C]/50 font-light">Chilled Jazz • Open until 11 PM</p>
           </div>
-          
+
           <div>
-            <button 
+            <button
               onClick={() => navigate('/login')}
               className="inline-flex items-center gap-2 bg-[#0F0E0C] hover:bg-[#A88C74] text-[#F4F1EA] font-bold px-6 py-2.5 rounded-full text-xs tracking-widest uppercase transition-all shadow-xl shadow-black/10 active:scale-95"
             >
@@ -100,11 +100,11 @@ export default function GuestHome() {
 
       {/* Main Container Grid */}
       <main className="max-w-7xl mx-auto px-6 pb-16 space-y-16 relative z-30">
-        
+
         {/* Dynamic State Hero Section (Guest Unregistered) */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
           <div className="lg:col-span-8 bg-gradient-to-br from-[#0F0E0C] via-[#1A1815] to-[#24211D] text-[#F4F1EA] rounded-[2.5rem] p-8 md:p-12 flex flex-col justify-between shadow-2xl relative overflow-hidden group min-h-[340px]">
-            
+
             {/* Background Decorative Element */}
             <div className="absolute right-0 top-0 w-80 h-80 bg-[#A88C74]/5 rounded-full blur-3xl pointer-events-none group-hover:bg-[#A88C74]/10 transition-all duration-700"></div>
 
@@ -123,16 +123,16 @@ export default function GuestHome() {
             <div className="my-6 space-y-3 max-w-2xl relative z-10">
               <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#C5A880]">Selamat Datang, Pengunjung</p>
               <h2 className="text-3xl md:text-4xl font-light leading-[1.2] tracking-wide text-white font-display">
-                Where Logic Fails, <br/><span className="italic font-sans text-[#EAD3B3] font-normal">Great Coffee Speaks.</span>
+                Where Logic Fails, <br /><span className="italic font-sans text-[#EAD3B3] font-normal">Great Coffee Speaks.</span>
               </h2>
               <p className="text-[#F4F1EA]/60 text-xs font-light leading-relaxed max-w-lg">
                 Kami memecah aturan ekstraksi tradisional untuk menciptakan rasa ganjil yang tidak akan Anda temukan di Coffee Shop biasa.
               </p>
             </div>
-            
+
             {/* Call to action to login/join */}
             <div className="pt-2">
-              <button 
+              <button
                 onClick={() => navigate('/login')}
                 className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#EAD3B3] hover:text-white transition-colors group/btn"
               >
@@ -188,8 +188,8 @@ export default function GuestHome() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {featuredProducts.map((product) => (
-              <article 
-                key={product.id} 
+              <article
+                key={product.id}
                 className="bg-white border border-[#A88C74]/15 rounded-[2rem] p-6 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden group flex flex-col justify-between"
               >
                 <div>
@@ -197,14 +197,14 @@ export default function GuestHome() {
                     <span className="text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 bg-[#F4F1EA] text-[#A88C74] rounded-full">
                       {product.badge}
                     </span>
-                    <button 
+                    <button
                       onClick={() => toggleFavorite(product.id)}
                       className={`text-sm transition-colors ${favorites.includes(product.id) ? 'text-red-500 animate-pulse' : 'text-gray-300 hover:text-red-400'}`}
                     >
                       ★
                     </button>
                   </div>
-                  
+
                   <h4 className="text-lg font-bold text-[#0F0E0C] font-display group-hover:text-[#A88C74] transition-colors mb-1">{product.name}</h4>
                   <p className="text-xs text-[#0F0E0C]/50 leading-relaxed font-light mb-4 min-h-[48px]">{product.desc}</p>
                 </div>
@@ -218,7 +218,7 @@ export default function GuestHome() {
                     </div>
                   </div>
 
-                  <button 
+                  <button
                     onClick={() => navigate('/login')}
                     className="w-full bg-[#0F0E0C] hover:bg-[#A88C74] text-white py-2 rounded-xl transition-colors font-medium text-[10px] tracking-wider uppercase"
                   >
@@ -287,9 +287,8 @@ export default function GuestHome() {
                     </span>
                   </button>
                   <div
-                    className={`text-xs md:text-sm text-[#0F0E0C]/60 leading-relaxed font-light transition-all duration-300 overflow-hidden ${
-                      isOpen ? 'max-h-40 opacity-100 mt-2' : 'max-h-0 opacity-0 mt-0 pointer-events-none'
-                    }`}
+                    className={`text-xs md:text-sm text-[#0F0E0C]/60 leading-relaxed font-light transition-all duration-300 overflow-hidden ${isOpen ? 'max-h-40 opacity-100 mt-2' : 'max-h-0 opacity-0 mt-0 pointer-events-none'
+                      }`}
                   >
                     {faq.a}
                   </div>
@@ -307,17 +306,7 @@ export default function GuestHome() {
           <span>•</span>
           <button onClick={() => navigate('/v2')} className="hover:text-[#0F0E0C] transition-colors">Landing V2</button>
           <span>•</span>
-          <button onClick={() => navigate('/v3')} className="hover:text-[#0F0E0C] transition-colors">CRM V3</button>
-          <span>•</span>
           <button onClick={() => navigate('/menu')} className="hover:text-[#0F0E0C] transition-colors">Menu Page</button>
-        </div>
-        <div className="flex flex-wrap justify-center gap-4 text-[9px] font-bold text-stone-400">
-          <span className="text-[#A88C74]/50">📄 Dokumentasi PRD:</span>
-          <button onClick={() => navigate('/prd/v1')} className="hover:text-[#A88C74] transition-colors underline underline-offset-2">PRD V1 Basic</button>
-          <span>•</span>
-          <button onClick={() => navigate('/prd/v2')} className="hover:text-[#A88C74] transition-colors underline underline-offset-2">PRD V2 Intermediate</button>
-          <span>•</span>
-          <button onClick={() => navigate('/prd/v3')} className="hover:text-[#A88C74] transition-colors underline underline-offset-2">PRD V3 Complete</button>
         </div>
         <p>&copy; 2026 Format Ganjil Architecture of Coffee. Built to Redefine the Norm.</p>
       </footer>

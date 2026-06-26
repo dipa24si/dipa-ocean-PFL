@@ -16,7 +16,6 @@ import ErrorPage from '../components/ErrorPage';
 
 import GuestHomeV1 from '../../Pertemuan8/pages/GuestHomeV1';
 import GuestHomeV2 from '../../Pertemuan8/pages/GuestHomeV2';
-import CRMDashboardV3 from '../../Pertemuan8/pages/CRMDashboardV3';
 import MenuPage from '../../Pertemuan8/pages/MenuPage';
 import PRDPage1 from '../../Pertemuan8/pages/PRDPage1';
 import PRDPage2 from '../../Pertemuan8/pages/PRDPage2';
@@ -115,13 +114,12 @@ export default function AppRouter() {
         {/* Landing Page - Tampilan Guest dengan Promo */}
         <Route index element={<GuestHome />} />
         <Route path="/home" element={<Navigate to="/" replace />} />
-       
+
         <Route path="/login" element={<LoginV2 />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login-old" element={<Login />} />
         <Route path="/v1" element={<GuestHomeV1 />} />
         <Route path="/v2" element={<GuestHomeV2 />} />
-        <Route path="/v3" element={<CRMDashboardV3 />} />
         <Route path="/menu" element={<MenuPage />} />
         {/* PRD Documentation Pages */}
         <Route path="/prd/v1" element={<PRDPage1 />} />
@@ -162,7 +160,7 @@ export default function AppRouter() {
 
           <Route path="dashboard" element={<Dashboard />} />
 
-         
+
 
           {/* Menu Navigasi Admin */}
 
@@ -252,5 +250,5 @@ export default function AppRouter() {
 
   );
 
-} 
+}
 
