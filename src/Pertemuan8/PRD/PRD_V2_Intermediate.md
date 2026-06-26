@@ -126,7 +126,7 @@ Halaman Menu (/menu)
 
 ### Bukti Commit
 ```
-Commit: [HASH] feat: PRD V2 landing page with menu, testimonials, dark mode
+Commit: f027451 feat: PRD V2 landing page with menu, testimonials, dark mode
 ```
 
 ### Hasil Akhir V2:

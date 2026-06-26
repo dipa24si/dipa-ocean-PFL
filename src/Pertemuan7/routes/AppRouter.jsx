@@ -14,6 +14,12 @@ import GuestHome from '../pages/GuestHome';
 
 import ErrorPage from '../components/ErrorPage';
 
+import GuestHomeV1 from '../../Pertemuan8/pages/GuestHomeV1';
+import GuestHomeV2 from '../../Pertemuan8/pages/GuestHomeV2';
+import CRMDashboardV3 from '../../Pertemuan8/pages/CRMDashboardV3';
+import MenuPage from '../../Pertemuan8/pages/MenuPage';
+
+
 
 
 // Lazy load pages
@@ -110,6 +116,10 @@ export default function AppRouter() {
         <Route path="/login" element={<LoginV2 />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login-old" element={<Login />} />
+        <Route path="/v1" element={<GuestHomeV1 />} />
+        <Route path="/v2" element={<GuestHomeV2 />} />
+        <Route path="/v3" element={<CRMDashboardV3 />} />
+        <Route path="/menu" element={<MenuPage />} />
         <Route
           path="/member"
           element={

@@ -301,8 +301,17 @@ export default function GuestHome() {
 
       </main>
 
-      <footer className="text-center py-8 text-[10px] tracking-[0.2em] uppercase text-[#0F0E0C]/30 border-t border-[#A88C74]/10 bg-white">
-        &copy; 2026 Format Ganjil Architecture of Coffee. Built to Redefine the Norm.
+      <footer className="text-center py-8 text-[10px] tracking-[0.2em] uppercase text-[#0F0E0C]/40 border-t border-[#A88C74]/10 bg-white space-y-4">
+        <div className="flex flex-wrap justify-center gap-6 text-[9px] font-bold text-[#A88C74]">
+          <button onClick={() => navigate('/v1')} className="hover:text-[#0F0E0C] transition-colors">PRD V1 Basic</button>
+          <span>•</span>
+          <button onClick={() => navigate('/v2')} className="hover:text-[#0F0E0C] transition-colors">PRD V2 Intermediate</button>
+          <span>•</span>
+          <button onClick={() => navigate('/v3')} className="hover:text-[#0F0E0C] transition-colors">PRD V3 Complete</button>
+          <span>•</span>
+          <button onClick={() => navigate('/menu')} className="hover:text-[#0F0E0C] transition-colors">Menu Page</button>
+        </div>
+        <p>&copy; 2026 Format Ganjil Architecture of Coffee. Built to Redefine the Norm.</p>
       </footer>
     </div>
   );
