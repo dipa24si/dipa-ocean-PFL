@@ -1,11 +1,46 @@
 import { Link, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import PageHeader from '../components/PageHeader';
 import { FiArrowLeft, FiMail, FiPhone, FiShoppingBag, FiCalendar, FiCoffee, FiMapPin, FiUser, FiLink } from 'react-icons/fi';
 import customers from '../data/customers.json';
+import { fetchCustomerById } from '../services/supabaseApi';
 
 export default function CustomerDetail() {
   const { id } = useParams();
-  const customer = customers.find((item) => item.id === Number(id));
+  const [customer, setCustomer] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadCustomer = async () => {
+      setIsLoading(true);
+      try {
+        const fetched = await fetchCustomerById(Number(id));
+        if (fetched) {
+          setCustomer(fetched);
+        } else {
+          setCustomer(customers.find((item) => item.id === Number(id)) || null);
+        }
+      } catch (err) {
+        console.warn('[CustomerDetail] Supabase fetch failed, fallback ke local data', err);
+        setCustomer(customers.find((item) => item.id === Number(id)) || null);
+      }
+      setIsLoading(false);
+    };
+
+    loadCustomer();
+  }, [id]);
+
+  if (isLoading) {
+    return (
+      <div className="animate-in fade-in duration-500">
+        <PageHeader title="Detail Pelanggan" breadcrumb="Customers / Detail" />
+        <div className="text-center py-12 text-[#78675C]">
+          <div className="text-4xl mb-2">⏳</div>
+          Memuat detail pelanggan...
+        </div>
+      </div>
+    );
+  }
 
   if (!customer) {
     return (

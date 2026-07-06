@@ -2,11 +2,30 @@ import React, { useState, useEffect, useRef } from 'react';
 import PageHeader from '../components/PageHeader';
 import OrdersTable from '../components/OrdersTable';
 import { Search } from 'lucide-react';
+import { fetchOrders } from '../services/supabaseApi';
 
 export default function Orders() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [orders, setOrders] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const searchInputRef = useRef(null);
+
+  useEffect(() => {
+    const loadOrders = async () => {
+      setIsLoading(true);
+      try {
+        const data = await fetchOrders();
+        setOrders(data);
+      } catch (err) {
+        console.warn('[Orders.jsx] Supabase fetch failed, fallback to generated order list', err);
+        setOrders([]);
+      }
+      setIsLoading(false);
+    };
+
+    loadOrders();
+  }, []);
 
   // useEffect untuk auto-focus search input
   useEffect(() => {
@@ -45,7 +64,7 @@ export default function Orders() {
         </select>
       </div>
 
-      <OrdersTable totalOrders={30} searchTerm={searchTerm} filterStatus={filterStatus} />
+      <OrdersTable orders={orders} totalOrders={30} searchTerm={searchTerm} filterStatus={filterStatus} isLoading={isLoading} />
     </>
   );
 }

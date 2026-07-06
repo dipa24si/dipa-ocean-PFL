@@ -67,7 +67,7 @@ const generateOrders = (totalOrders) => {
   });
 };
 
-export default function OrdersTable({ totalOrders = 20, searchTerm = '', filterStatus = 'all' }) {
+export default function OrdersTable({ orders = [], totalOrders = 20, searchTerm = '', filterStatus = 'all', isLoading = false }) {
   const [sortBy, setSortBy] = useState('date');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -78,10 +78,10 @@ export default function OrdersTable({ totalOrders = 20, searchTerm = '', filterS
     status: '',
   });
 
-  const orders = generateOrders(totalOrders);
+  const ordersToDisplay = orders.length > 0 ? orders : generateOrders(totalOrders);
 
   // Filter berdasarkan search term dan status
-  const filteredOrders = orders.filter((order) => {
+  const filteredOrders = ordersToDisplay.filter((order) => {
     const matchesSearch = searchTerm === '' || 
       order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||

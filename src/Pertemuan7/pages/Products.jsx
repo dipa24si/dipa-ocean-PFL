@@ -2,44 +2,41 @@ import React, { useState, useEffect, useRef } from 'react';
 import PageHeader from '../components/PageHeader';
 import ProductsTable from '../components/ProductsTable';
 import { Search } from 'lucide-react';
+import { fetchProducts } from '../services/supabaseApi';
 
 /**
  * HOOKS YANG DIGUNAKAN:
- * - useState: Menyimpan search term, filter category, dan products
- * - useEffect: Simulasi fetch data produk dari server
+ * - useState: Menyimpan daftar produk, search term, dan kategori
+ * - useEffect: Fetch data produk dari Supabase
  * - useRef: Focus otomatis di search input
  */
 export default function Products() {
-  // useState untuk menyimpan state
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  // useRef untuk fokus otomatis input search
   const searchInputRef = useRef(null);
 
-  // useEffect untuk simulasi fetch data
   useEffect(() => {
-    // Simulasi fetch data dari server/API
     const loadProducts = async () => {
       setIsLoading(true);
-      // Simulasi delay API call
-      await new Promise(resolve => setTimeout(resolve, 500));
+      try {
+        const data = await fetchProducts();
+        setProducts(data);
+      } catch (err) {
+        console.warn('[Products.jsx] Supabase fetch failed, fallback to empty product list', err);
+        setProducts([]);
+      }
       setIsLoading(false);
     };
 
     loadProducts();
 
-    // Log lifecycle untuk debugging
-    console.log('[Products.jsx] Component mounted - useEffect dijalankan');
-
     return () => {
       console.log('[Products.jsx] Component will unmount - cleanup effect');
     };
-  }, []); // dependency array kosong = jalankan hanya saat mount
+  }, []);
 
-  // useEffect untuk fokus otomatis di search input
   useEffect(() => {
     if (searchInputRef.current) {
       searchInputRef.current.focus();
@@ -79,7 +76,7 @@ export default function Products() {
       {isLoading ? (
         <div className="text-center py-8">Loading produk...</div>
       ) : (
-        <ProductsTable searchTerm={searchTerm} selectedCategory={selectedCategory} />
+        <ProductsTable products={products} searchTerm={searchTerm} selectedCategory={selectedCategory} />
       )}
     </div>
   );

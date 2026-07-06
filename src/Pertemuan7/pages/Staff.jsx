@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PageHeader from '../components/PageHeader';
 import EmptyState from '../components/EmptyState';
 import StaffCard from '../components/StaffCard';
@@ -54,6 +54,8 @@ const defaultStaff = {
   status: 'active',
 };
 
+import { fetchStaff, createStaff, deleteStaff } from '../services/supabaseApi';
+
 export default function Staff() {
   const [staff, setStaff] = useState(generateInitialStaff);
   const [searchTerm, setSearchTerm] = useState('');
@@ -61,6 +63,32 @@ export default function Staff() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newStaff, setNewStaff] = useState(defaultStaff);
   const [editingStaffId, setEditingStaffId] = useState(null);
+
+  useEffect(() => {
+    const loadStaff = async () => {
+      try {
+        const data = await fetchStaff();
+        if (data && data.length > 0) {
+          setStaff(data.map((s) => ({
+            id: s.id,
+            name: s.name,
+            position: s.position,
+            email: s.email || '',
+            phone: s.phone || '',
+            shift: s.shift || 'Pagi',
+            joinDate: s.join_date || new Date().toISOString().slice(0,10),
+            salary: s.salary || '',
+            status: s.status || 'active',
+            avatar: s.avatar || 'Staff',
+          })));
+        }
+      } catch (err) {
+        console.warn('[Staff.jsx] fetchStaff failed, using generated sample', err);
+      }
+    };
+
+    loadStaff();
+  }, []);
 
   const filteredStaff = staff.filter((member) => {
     const matchesSearch = member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -83,7 +111,15 @@ export default function Staff() {
   };
 
   const removeStaff = (staffId) => {
-    setStaff(staff.filter((member) => member.id !== staffId));
+    // attempt to delete from server then update local state
+    (async () => {
+      try {
+        await deleteStaff(staffId);
+      } catch (err) {
+        console.warn('deleteStaff failed, proceeding with local removal', err);
+      }
+      setStaff(staff.filter((member) => member.id !== staffId));
+    })();
   };
 
   const handleSubmitStaff = (event) => {
@@ -92,18 +128,45 @@ export default function Staff() {
 
     const staffMember = {
       ...newStaff,
-      id: editingStaffId || staff.length + 1,
-      joinDate: editingStaffId ? staff.find((member) => member.id === editingStaffId).joinDate : new Date().toISOString().slice(0, 10),
+      id: editingStaffId || undefined,
+      join_date: editingStaffId ? staff.find((member) => member.id === editingStaffId).joinDate : new Date().toISOString().slice(0, 10),
       salary: newStaff.salary.toString().startsWith('Rp') ? newStaff.salary : `Rp ${newStaff.salary}`,
       avatar: avatarIcons[newStaff.position] || 'Staff',
     };
 
-    if (editingStaffId) {
-      setStaff(staff.map((member) => (member.id === editingStaffId ? staffMember : member)));
-    } else {
-      setStaff([staffMember, ...staff]);
-    }
-    cancelEditStaff();
+    (async () => {
+      try {
+        const created = await createStaff(staffMember);
+        // normalize created record
+        const normalized = {
+          id: created.id,
+          name: created.name,
+          position: created.position,
+          email: created.email || '',
+          phone: created.phone || '',
+          shift: created.shift || 'Pagi',
+          joinDate: created.join_date || (new Date().toISOString().slice(0,10)),
+          salary: created.salary || staffMember.salary,
+          status: created.status || 'active',
+          avatar: created.avatar || staffMember.avatar,
+        };
+
+        if (editingStaffId) {
+          setStaff(staff.map((member) => (member.id === editingStaffId ? normalized : member)));
+        } else {
+          setStaff([normalized, ...staff]);
+        }
+      } catch (err) {
+        console.warn('[Staff.jsx] createStaff failed, falling back to local update', err);
+        if (editingStaffId) {
+          setStaff(staff.map((member) => (member.id === editingStaffId ? staffMember : member)));
+        } else {
+          setStaff([ { ...staffMember, id: staff.length + 1, joinDate: staffMember.join_date }, ...staff]);
+        }
+      } finally {
+        cancelEditStaff();
+      }
+    })();
   };
 
   return (

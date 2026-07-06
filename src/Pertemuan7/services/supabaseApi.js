@@ -1,8 +1,34 @@
-import { supabase } from './supabaseClient';
+import { supabase, isSupabaseConfigured } from './supabaseClient';
+import customersData from '../data/customers.json';
 
 const USERS_TABLE = 'users';
+const CUSTOMERS_TABLE = 'customers';
+const PRODUCTS_TABLE = 'products';
+const ORDERS_TABLE = 'orders';
+const INVENTORY_TABLE = 'inventory';
 const MESSAGES_TABLE = 'feedback_complaints';
 const AVATARS_BUCKET = 'avatars';
+
+const fallbackProducts = [
+  { id: 1, name: 'Espresso', category: 'Coffee', description: 'Kopi espresso klasik dengan rasa kuat dan kaya', price: 15000, stock: 24, available: true },
+  { id: 2, name: 'Cappuccino', category: 'Coffee', description: 'Espresso dengan susu steamed dan foam lembut', price: 25000, stock: 18, available: true },
+  { id: 3, name: 'Iced Latte', category: 'Cold Drinks', description: 'Latte dingin dengan susu dan es', price: 28000, stock: 12, available: true },
+  { id: 4, name: 'Chocolate Cake', category: 'Dessert', description: 'Kue coklat moist dengan frosting lezat', price: 35000, stock: 7, available: true },
+  { id: 5, name: 'Muffin Blueberry', category: 'Dessert', description: 'Muffin lembut dengan potongan blueberry', price: 20000, stock: 14, available: false },
+];
+
+const fallbackOrders = [
+  { id: '#1023', customerId: 1, customer: 'Ahmad Rahman', items: 'Espresso, Croissant', total: 'Rp 45.000', status: 'Completed', orderDate: '2026-06-10', paymentMethod: 'Cash', deliveryAddress: 'Jalan Merdeka No. 45', createdAt: '2026-06-10' },
+  { id: '#1024', customerId: 2, customer: 'Siti Nurhaliza', items: 'Iced Latte', total: 'Rp 28.000', status: 'Processing', orderDate: '2026-06-12', paymentMethod: 'OVO', deliveryAddress: 'Jalan Sudirman No. 123', createdAt: '2026-06-12' },
+  { id: '#1025', customerId: 3, customer: 'Budi Santoso', items: 'Latte, Chocolate Cake', total: 'Rp 63.000', status: 'Pending', orderDate: '2026-06-15', paymentMethod: 'GoPay', deliveryAddress: 'Jalan Gatot Subroto No. 67', createdAt: '2026-06-15' },
+];
+
+const fallbackInventory = [
+  { id: 1, name: 'Biji Kopi Arabica', category: 'Biji Kopi', stock: 25, minStock: 10, unit: 'kg', price: 'Rp 150.000', supplier: 'PT Kopi Nusantara' },
+  { id: 2, name: 'Susu Full Cream', category: 'Susu', stock: 8, minStock: 15, unit: 'liter', price: 'Rp 25.000', supplier: 'CV Susu Sejahtera' },
+  { id: 3, name: 'Gula Pasir', category: 'Pemanis', stock: 50, minStock: 20, unit: 'kg', price: 'Rp 15.000', supplier: 'Toko Grosir ABC' },
+  { id: 4, name: 'Syrup Vanilla', category: 'Syrup', stock: 12, minStock: 5, unit: 'botol', price: 'Rp 45.000', supplier: 'Importir Syrup' },
+];
 
 const normalizeUser = (authUser, profile = {}) => ({
   id: profile.id || authUser?.id,
@@ -13,6 +39,66 @@ const normalizeUser = (authUser, profile = {}) => ({
   phone: profile.phone || '',
   avatar: profile.avatar || '',
   created_at: profile.created_at || authUser?.created_at,
+});
+
+const normalizeCustomerRecord = (row) => ({
+  id: row.id,
+  name: row.name,
+  username: row.username,
+  email: row.email,
+  phone: row.phone,
+  gender: row.gender,
+  dateOfBirth: row.date_of_birth,
+  address: row.address,
+  city: row.city,
+  province: row.province,
+  totalOrders: row.total_orders,
+  totalSpent: row.total_spent,
+  lastOrder: row.last_order,
+  lastLogin: row.last_login,
+  membershipLevel: row.membership_level,
+  joinDate: row.join_date,
+  referralCode: row.referral_code,
+  userSource: row.user_source,
+  emailSubscription: row.email_subscription,
+  status: row.status,
+  avatar: row.avatar,
+});
+
+const normalizeProductRecord = (row) => ({
+  id: row.id,
+  name: row.name,
+  category: row.category,
+  description: row.description,
+  price: row.price,
+  stock: row.stock,
+  available: row.available,
+  createdAt: row.created_at,
+});
+
+const normalizeOrderRecord = (row) => ({
+  id: row.id,
+  customerId: row.customer_id,
+  customer: row.customer || row.customers?.name || `#${row.customer_id}`,
+  items: row.items,
+  total: row.total,
+  status: row.status,
+  orderDate: row.order_date,
+  paymentMethod: row.payment_method,
+  deliveryAddress: row.delivery_address,
+  createdAt: row.created_at,
+});
+
+const normalizeInventoryRecord = (row) => ({
+  id: row.id,
+  name: row.name,
+  category: row.category,
+  stock: row.stock,
+  minStock: row.min_stock,
+  unit: row.unit,
+  price: row.price,
+  supplier: row.supplier,
+  createdAt: row.created_at,
 });
 
 export const getCurrentSession = async () => {
@@ -174,6 +260,171 @@ export const fetchUsers = async () => {
 
   if (error) throw error;
   return data || [];
+};
+
+export const fetchCustomersPage = async (page = 1, pageSize = 8) => {
+  if (!isSupabaseConfigured) {
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize;
+    const paged = customersData.slice(from, to);
+    return {
+      data: paged,
+      count: customersData.length,
+    };
+  }
+
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
+  const { data, error, count } = await supabase
+    .from(CUSTOMERS_TABLE)
+    .select('*', { count: 'exact' })
+    .order('id', { ascending: true })
+    .range(from, to);
+
+  if (error) throw error;
+  return {
+    data: (data || []).map(normalizeCustomerRecord),
+    count: count ?? 0,
+  };
+};
+
+export const fetchCustomerById = async (id) => {
+  if (!isSupabaseConfigured) {
+    return customersData.find((item) => item.id === Number(id)) || null;
+  }
+
+  const { data, error } = await supabase
+    .from(CUSTOMERS_TABLE)
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) throw error;
+  return data ? normalizeCustomerRecord(data) : null;
+};
+
+export const fetchProducts = async () => {
+  if (!isSupabaseConfigured) {
+    return fallbackProducts;
+  }
+
+  const { data, error } = await supabase
+    .from(PRODUCTS_TABLE)
+    .select('*')
+    .order('name', { ascending: true });
+
+  if (error) throw error;
+  return (data || []).map(normalizeProductRecord);
+};
+
+export const fetchOrders = async () => {
+  if (!isSupabaseConfigured) {
+    return fallbackOrders;
+  }
+
+  const { data, error } = await supabase
+    .from(ORDERS_TABLE)
+    .select('*, customers(name)')
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return (data || []).map(normalizeOrderRecord);
+};
+
+export const fetchInventory = async () => {
+  if (!isSupabaseConfigured) {
+    return fallbackInventory;
+  }
+
+  const { data, error } = await supabase
+    .from(INVENTORY_TABLE)
+    .select('*')
+    .order('name', { ascending: true });
+
+  if (error) throw error;
+  return (data || []).map(normalizeInventoryRecord);
+};
+
+export const fetchStaff = async () => {
+  if (!isSupabaseConfigured) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from('staff')
+    .select('*')
+    .order('id', { ascending: true });
+
+  if (error) throw error;
+  return data || [];
+};
+
+export const createStaff = async (payload) => {
+  if (!isSupabaseConfigured) {
+    return { ...payload, id: Date.now() };
+  }
+
+  // If id provided, perform upsert (edit). Otherwise compute next id and insert.
+  if (payload.id) {
+    const { data, error } = await supabase
+      .from('staff')
+      .upsert(payload, { onConflict: 'id' })
+      .select()
+      .single();
+    if (error) throw error;
+    return data;
+  }
+
+  const { data: last, error: lastErr } = await supabase
+    .from('staff')
+    .select('id')
+    .order('id', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (lastErr) throw lastErr;
+  const nextId = (last?.id ?? 0) + 1;
+
+  const { data, error } = await supabase
+    .from('staff')
+    .insert({ id: nextId, ...payload })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+};
+
+export const deleteStaff = async (id) => {
+  if (!isSupabaseConfigured) {
+    return;
+  }
+  const { error } = await supabase.from('staff').delete().eq('id', id);
+  if (error) throw error;
+};
+
+export const createInventoryItem = async (payload) => {
+  if (!isSupabaseConfigured) {
+    return { ...payload, id: Date.now() };
+  }
+
+  const { data: last, error: lastErr } = await supabase
+    .from(INVENTORY_TABLE)
+    .select('id')
+    .order('id', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (lastErr) throw lastErr;
+  const nextId = (last?.id ?? 0) + 1;
+
+  const { data, error } = await supabase
+    .from(INVENTORY_TABLE)
+    .insert({ id: nextId, ...payload })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return normalizeInventoryRecord(data);
 };
 
 export const createUser = async (payload) => {

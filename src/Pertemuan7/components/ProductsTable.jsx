@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -35,40 +35,10 @@ import {
 import DeleteConfirmDialog from './DeleteConfirmDialog';
 import { MoreVertical, Edit2, Trash2, Package } from 'lucide-react';
 
-const productData = [
-  { name: 'Espresso', category: 'Coffee', price: 15000, description: 'Kopi espresso klasik dengan rasa kuat dan kaya' },
-  { name: 'Cappuccino', category: 'Coffee', price: 25000, description: 'Espresso dengan susu steamed dan foam yang sempurna' },
-  { name: 'Latte', category: 'Coffee', price: 28000, description: 'Kopi dengan susu lembut dan sedikit busa' },
-  { name: 'Americano', category: 'Coffee', price: 22000, description: 'Espresso panjang dengan air panas untuk rasa ringan' },
-  { name: 'Croissant', category: 'Pastry', price: 18000, description: 'Croissant butter yang renyah dan lembut' },
-  { name: 'Muffin Blueberry', category: 'Pastry', price: 20000, description: 'Muffin manis dengan potongan blueberry segar' },
-  { name: 'Chocolate Cake', category: 'Dessert', price: 35000, description: 'Kue coklat dengan frosting krim yang lezat' },
-  { name: 'Cheesecake', category: 'Dessert', price: 37000, description: 'Cheesecake lembut dengan lapisan keju krim' },
-  { name: 'Iced Latte', category: 'Cold Drinks', price: 28000, description: 'Latte dingin dengan es yang menyegarkan' },
-  { name: 'Iced Tea', category: 'Cold Drinks', price: 18000, description: 'Teh dingin manis dengan aroma lemon segar' },
-];
-
-const generateProducts = () => {
-  return Array.from({ length: 30 }, (_, index) => {
-    const base = productData[index % productData.length];
-    const additional = Math.floor(index / productData.length) * 1000;
-    const price = base.price + additional;
-    return {
-      id: index + 1,
-      name: `${base.name}${index >= productData.length ? ` ${Math.floor(index / productData.length)}` : ''}`,
-      category: base.category,
-      price: price,
-      description: base.description,
-      stock: Math.floor(Math.random() * 50) + 5,
-      available: index % 7 !== 0,
-    };
-  });
-};
-
-export default function ProductsTable({ searchTerm = '', selectedCategory = 'all' }) {
+export default function ProductsTable({ products = [], searchTerm = '', selectedCategory = 'all' }) {
   const [sortBy, setSortBy] = useState('name');
   const [filterCategory, setFilterCategory] = useState('all');
-  const [products, setProducts] = useState(() => generateProducts());
+  const [tableProducts, setTableProducts] = useState(products);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -81,7 +51,11 @@ export default function ProductsTable({ searchTerm = '', selectedCategory = 'all
     available: 'true',
   });
 
-  const categories = ['all', ...new Set(products.map(p => p.category))];
+  useEffect(() => {
+    setTableProducts(products);
+  }, [products]);
+
+  const categories = ['all', ...new Set(tableProducts.map(p => p.category))];
 
   const matchesTopCategory = (product) => {
     const categoryMap = {
@@ -95,7 +69,7 @@ export default function ProductsTable({ searchTerm = '', selectedCategory = 'all
   };
 
   // Filter berdasarkan search, kategori halaman, dan kategori tabel
-  const filteredProducts = products.filter((product) => {
+  const filteredProducts = tableProducts.filter((product) => {
     const keyword = searchTerm.toLowerCase().trim();
     const matchesSearch =
       keyword === '' ||
@@ -140,7 +114,7 @@ export default function ProductsTable({ searchTerm = '', selectedCategory = 'all
   };
 
   const handleConfirmDelete = () => {
-    setProducts((currentProducts) =>
+    setTableProducts((currentProducts) =>
       currentProducts.filter((product) => product.id !== selectedProduct?.id)
     );
     setDeleteDialogOpen(false);
@@ -148,7 +122,7 @@ export default function ProductsTable({ searchTerm = '', selectedCategory = 'all
   };
 
   const handleSaveEdit = () => {
-    setProducts((currentProducts) =>
+    setTableProducts((currentProducts) =>
       currentProducts.map((product) =>
         product.id === selectedProduct?.id
           ? {

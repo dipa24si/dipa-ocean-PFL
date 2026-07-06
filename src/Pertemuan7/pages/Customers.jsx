@@ -1,8 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PageHeader from '../components/PageHeader';
 import CustomersTable from '../components/CustomersTable';
-import customers from '../data/customers.json';
 import { Search, Filter } from 'lucide-react';
+import customers from '../data/customers.json';
+import { fetchCustomersPage } from '../services/supabaseApi';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+  PaginationEllipsis,
+} from '@/components/ui/pagination';
 
 /**
  * Customers Page - PERTEMUAN 12 HOOKS IMPLEMENTATION
@@ -15,9 +25,13 @@ export default function Customers() {
   // useState untuk search dan filter
   const [searchTerm, setSearchTerm] = useState('');
   const [loyaltyFilter, setLoyaltyFilter] = useState('all'); // 'all', 'gold', 'silver', 'bronze'
+  const [customersList, setCustomersList] = useState(customers);
   const [filteredCustomers, setFilteredCustomers] = useState(customers);
   const [isLoading, setIsLoading] = useState(true);
   const [totalSpent, setTotalSpent] = useState(0);
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(8);
+  const [totalCustomers, setTotalCustomers] = useState(customers.length);
 
   // useRef untuk auto-focus input dan scroll reference
   const searchInputRef = useRef(null);
@@ -26,16 +40,31 @@ export default function Customers() {
   // useEffect 1: Fetch customers data
   useEffect(() => {
     console.log('[Customers.jsx] useEffect #1: Fetch data triggered');
-    
+
     const loadCustomers = async () => {
       setIsLoading(true);
-      // Simulasi API call
-      await new Promise(resolve => setTimeout(resolve, 600));
-      
-      // Calculate total spent
-      const total = customers.reduce((sum, c) => sum + (c.totalSpent || 0), 0);
-      setTotalSpent(total);
-      
+
+      try {
+        const { data, count } = await fetchCustomersPage(page, pageSize);
+        if (data?.length > 0) {
+          setCustomersList(data);
+          setFilteredCustomers(data);
+          setTotalCustomers(count ?? data.length);
+          setTotalSpent(data.reduce((sum, c) => sum + Number(String(c.totalSpent).replace(/\D/g, '')), 0));
+        } else {
+          setCustomersList(customers);
+          setFilteredCustomers(customers);
+          setTotalCustomers(customers.length);
+          setTotalSpent(customers.reduce((sum, c) => sum + Number(String(c.totalSpent).replace(/\D/g, '')), 0));
+        }
+      } catch (err) {
+        console.warn('[Customers.jsx] Supabase fetch failed, using local fallback', err);
+        setCustomersList(customers);
+        setFilteredCustomers(customers);
+        setTotalCustomers(customers.length);
+        setTotalSpent(customers.reduce((sum, c) => sum + Number(String(c.totalSpent).replace(/\D/g, '')), 0));
+      }
+
       setIsLoading(false);
       console.log('[Customers.jsx] Data loaded successfully');
     };
@@ -45,7 +74,7 @@ export default function Customers() {
     return () => {
       console.log('[Customers.jsx] Cleanup: useEffect #1');
     };
-  }, []); // dependency array kosong = jalankan saat component mount
+  }, [page, pageSize]);
 
   // useEffect 2: Auto-focus search input
   useEffect(() => {
@@ -59,7 +88,7 @@ export default function Customers() {
   useEffect(() => {
     console.log('[Customers.jsx] useEffect #3: Filter triggered - search:', searchTerm, 'loyalty:', loyaltyFilter);
 
-    let filtered = customers;
+    let filtered = customersList;
 
     // Filter berdasarkan search term
     if (searchTerm) {
@@ -75,7 +104,7 @@ export default function Customers() {
     }
 
     setFilteredCustomers(filtered);
-  }, [searchTerm, loyaltyFilter]); // dependency array dengan dependencies
+  }, [searchTerm, loyaltyFilter, customersList]); // dependency array dengan dependencies
 
   // useEffect 4: Service Automation - auto-send email campaigns
   useEffect(() => {
@@ -155,7 +184,7 @@ export default function Customers() {
             Reset Filter
           </button>
           <div className="text-sm text-[#78675C]">
-            Menampilkan <strong>{filteredCustomers.length}</strong> dari <strong>{customers.length}</strong> pelanggan
+            Menampilkan <strong>{filteredCustomers.length}</strong> dari <strong>{totalCustomers}</strong> pelanggan
           </div>
         </div>
       </div>
@@ -174,7 +203,60 @@ export default function Customers() {
             Tidak ada pelanggan yang sesuai dengan filter
           </div>
         ) : (
-          <CustomersTable customers={filteredCustomers} />
+          <>
+            <CustomersTable customers={filteredCustomers} />
+            <div className="mt-4 flex items-center justify-between bg-white p-4 rounded-lg border border-[#D4A574]/20">
+              <div className="text-sm text-[#78675C]">Halaman {page} dari {Math.ceil(totalCustomers / pageSize)}</div>
+              <div>
+                {/* Pagination using shadcn-style components */}
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1} />
+                    </PaginationItem>
+
+                    {(() => {
+                      const totalPages = Math.max(1, Math.ceil(totalCustomers / pageSize));
+                      const pages = [];
+                      if (totalPages <= 7) {
+                        for (let i = 1; i <= totalPages; i++) pages.push(i);
+                      } else {
+                        if (page <= 4) {
+                          pages.push(1, 2, 3, 4, 5, '...', totalPages);
+                        } else if (page >= totalPages - 3) {
+                          pages.push(1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+                        } else {
+                          pages.push(1, '...', page - 1, page, page + 1, '...', totalPages);
+                        }
+                      }
+
+                      return pages.map((p, idx) => (
+                        typeof p === 'string' ? (
+                          <PaginationItem key={`e-${idx}`}>
+                            <PaginationEllipsis />
+                          </PaginationItem>
+                        ) : (
+                          <PaginationItem key={p}>
+                            <PaginationLink
+                              href="#"
+                              isActive={p === page}
+                              onClick={() => setPage(p)}
+                            >
+                              {p}
+                            </PaginationLink>
+                          </PaginationItem>
+                        )
+                      ));
+                    })()}
+
+                    <PaginationItem>
+                      <PaginationNext onClick={() => setPage((p) => Math.min(Math.ceil(totalCustomers / pageSize), p + 1))} disabled={page >= Math.ceil(totalCustomers / pageSize)} />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            </div>
+          </>
         )}
       </div>
     </div>
