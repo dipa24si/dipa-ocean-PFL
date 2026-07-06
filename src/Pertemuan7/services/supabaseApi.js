@@ -387,7 +387,7 @@ export const createStaff = async (payload) => {
 
   const { data, error } = await supabase
     .from('staff')
-    .insert({ id: nextId, ...payload })
+    .insert({ ...payload, id: nextId })
     .select()
     .single();
 
@@ -419,7 +419,7 @@ export const createInventoryItem = async (payload) => {
 
   const { data, error } = await supabase
     .from(INVENTORY_TABLE)
-    .insert({ id: nextId, ...payload })
+    .insert({ ...payload, id: nextId })
     .select()
     .single();
 

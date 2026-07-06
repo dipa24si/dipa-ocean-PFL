@@ -60,7 +60,7 @@ export default function ProtectedRoute({ children, allowedRoles }) {
   }
 
   if (status === 'guest') {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" state={{ fromRedirect: true }} replace />;
   }
 
   if (allowedRoles?.length && !allowedRoles.includes(userRole)) {

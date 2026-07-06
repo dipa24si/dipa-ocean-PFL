@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Eye, EyeOff, LogIn, ArrowLeft } from 'lucide-react';
 import { loginWithSupabase } from '../services/supabaseApi';
 
@@ -16,6 +16,7 @@ export default function LoginV2() {
   const passwordInputRef = useRef(null);
   const submitButtonRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     emailInputRef.current?.focus();
@@ -69,7 +70,13 @@ export default function LoginV2() {
       {/* Header Transparan Atas */}
       <header className="max-w-7xl w-full mx-auto px-6 py-6 flex justify-between items-center relative z-10">
         <button 
-          onClick={() => navigate(-1)}
+          onClick={() => {
+            if (location.state?.fromRedirect) {
+              navigate('/', { replace: true });
+            } else {
+              navigate(-1);
+            }
+          }}
           className="inline-flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] uppercase text-[#0F0E0C]/60 hover:text-[#0F0E0C] transition-colors group"
         >
           <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-1" />
